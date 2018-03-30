@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TastePad</string>
+    <string name="add_button_text">Add</string>
+    <string name="item_editText_hint">Write a new item</string>
+    <string name="appName">easyChef</string>
+    <string name="TODO">TODO</string>
+</resources>
