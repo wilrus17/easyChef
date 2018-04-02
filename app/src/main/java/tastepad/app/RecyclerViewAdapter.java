@@ -36,8 +36,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
-        holder.tv_recipe_title.setText(mData.get(position).getTitle());
-        holder.img_recipe_thumbnail.setImageResource(mData.get(position).getThumbnail());
+        holder.tv_recipe_title.setText(mData.get(position).getRecipename());
+        // get image for recipe cardView
+        // holder.img_recipe_thumbnail.setImageResource(mData.get(position).getThumbnail());
 
     }
 

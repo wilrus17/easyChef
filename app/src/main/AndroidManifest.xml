@@ -21,6 +21,7 @@
         <activity android:name=".ShoppingList" />
         <activity android:name=".Explore" />
         <activity android:name=".activity_recipe_screen"></activity>
+        <activity android:name=".NewRecipe" />
     </application>
 
 </manifest>

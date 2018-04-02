@@ -2,54 +2,51 @@ package tastepad.app;
 
 public class Recipe {
 
-    private int ID;
-    private String Title;
-    private String Category;
-    private int Thumbnail;
+    private int _id;
+    private String recipename;
+    private String description;
+    private String category;
 
-    public Recipe() {
+
+    // create new recipe
+    public Recipe(String recipename, String description, String category) {
+        this.recipename = recipename;
+        this.description = description;
+        this.category = category;
     }
 
-    public Recipe(int id, String title, String category, int thumbnail){
-        ID = id;
-        Title = title;
-        Category = category;
-        Thumbnail = thumbnail;
+    //set column values
+    public void set_id(int _id) {
+        this._id = _id;
     }
 
-
-
-    public Integer getID() {
-        return ID;
+    public void setRecipename(String recipename) {
+        this.recipename = recipename;
     }
 
-    public String getTitle() {
-        return Title;
-    }
-
-    public String getCategory() {
-        return Category;
-    }
-
-    public int getThumbnail() {
-        return Thumbnail;
-    }
-
-    public void setID(int ID) {
-        this.ID = ID;
-    }
-
-    public void setTitle(String title) {
-        Title = title;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setCategory(String category) {
-        Category = category;
+        this.category = category;
     }
 
-    public void setThumbnail(int thumbnail){
-        Thumbnail = thumbnail;
+    //get column values
+    public int get_id() {
+        return _id;
     }
 
+    public String getRecipename() {
+        return recipename;
+    }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public String getCategory() {
+        return category;
+    }
 }
+
