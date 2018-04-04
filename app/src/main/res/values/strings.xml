@@ -11,4 +11,13 @@
     <string name="btnRemove">Remove</string>
     <string name="btnAdd">Add</string>
     <string name="btnDisplay">Show</string>
+
+    <string-array name="units_array">
+        <item>g</item>
+        <item>lb</item>
+        <item>tsp</item>
+        <item>Tbsp</item>
+        <item>l</item>
+        <item>cup</item>
+    </string-array>
 </resources>

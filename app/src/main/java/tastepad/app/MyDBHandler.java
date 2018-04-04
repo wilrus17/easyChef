@@ -27,9 +27,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String query = "CREATE TABLE " + TABLE_RECIPE + "(" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_RECIPENAME + " TEXT, " +
-                COLUMN_DESCRIPTION + " TEXT, " +
-                COLUMN_CATEGORY + " TEXT " +
+                COLUMN_RECIPENAME + " TEXT " +
+
                 ");";
         db.execSQL(query);
     }
@@ -44,11 +43,15 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public void addRecipe(Recipe recipe){
         ContentValues values = new ContentValues();
         values.put(COLUMN_RECIPENAME, recipe.getRecipename());
-        values.put(COLUMN_DESCRIPTION, recipe.getDescription());
-        values.put(COLUMN_CATEGORY, recipe.getCategory());
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_RECIPE, null, values);
         db.close();
+    }
+
+    public void deleteRecipe(String recipeId){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DELETE FROM" + TABLE_RECIPE + " WHERE " + COLUMN_ID + "=\"" + recipeId + "\";" );
+
     }
 
 }

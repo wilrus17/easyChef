@@ -1,6 +1,7 @@
 package tastepad.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -27,6 +29,7 @@ public class NewRecipe extends AppCompatActivity {
     Spinner unitIn;
     Button buttonAdd;
     LinearLayout container;
+    Spinner unitSpinner;
 
     Button buttonClear;
 
@@ -51,6 +54,10 @@ public class NewRecipe extends AppCompatActivity {
         container = (LinearLayout) findViewById(R.id.new_ingredient_layout);
         unitIn = (Spinner) findViewById(R.id.unitin);
         buttonClear = (Button) findViewById(R.id.clear);
+        unitSpinner = (Spinner) findViewById(R.id.unitin);
+
+        // Tag for the number of new ingredient rows added
+        buttonAdd.setTag(1);
 
         // clears top ingredient field
         buttonClear.setOnClickListener(new OnClickListener() {
@@ -62,26 +69,28 @@ public class NewRecipe extends AppCompatActivity {
             }
         });
 
-        // Add ingredient field
+        // Add ingredient row
         buttonAdd.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                LayoutInflater layoutInflater =
-                        (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+                final int rowsAdded = (Integer)arg0.getTag();
+                arg0.setTag(rowsAdded+1);
+
+                LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View addView = layoutInflater.inflate(R.layout.cardview_new_ingredient, null);
 
                 EditText textOut = (EditText) addView.findViewById(R.id.new_ingredient_text);
-
                 EditText quantityOut = (EditText) addView.findViewById(R.id.new_ingredient_quantity);
-
                 Spinner unitOut = (Spinner) addView.findViewById(R.id.new_ingredient_unit);
 
-                // Remove an ingredient
+                // Remove an ingredient row
                 Button buttonRemove = (Button) addView.findViewById(R.id.remove);
                 buttonRemove.setOnClickListener(new OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
+                        v.setTag(rowsAdded-1);
                         ((LinearLayout) addView.getParent()).removeView(addView);
                     }
                 });
@@ -92,41 +101,6 @@ public class NewRecipe extends AppCompatActivity {
 
     }
 
-
-
-
-
-
-
-
-
-        /*
-
-
-        // Button for +1 ingredient card
-        Button b1 = (Button) findViewById(R.id.new_ingredient_button);
-        b1.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LinearLayout firstLayout = (LinearLayout) findViewById(R.id.new_ingredient_layout);
-                final LinearLayout secondLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.cardview_new_ingredient,null, false);
-
-                Button b2 = (Button) findViewById(R.id.remove);
-                b2.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ((LinearLayout)secondLayout.getParent()).removeView(secondLayout);
-                    }
-                });
-                firstLayout.addView(secondLayout);
-
-            }
-        });
-
-                // Button for binning an ingredient card
-
-
-*/
 
 
     @Override
@@ -141,6 +115,19 @@ public class NewRecipe extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.tick_button:
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 }
 
 
