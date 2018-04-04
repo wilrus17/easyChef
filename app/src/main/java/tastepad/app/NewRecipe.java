@@ -22,6 +22,9 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NewRecipe extends AppCompatActivity {
 
     EditText textIn;
@@ -30,8 +33,8 @@ public class NewRecipe extends AppCompatActivity {
     Button buttonAdd;
     LinearLayout container;
     Spinner unitSpinner;
-
     Button buttonClear;
+    Button buttonSave;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,9 +58,8 @@ public class NewRecipe extends AppCompatActivity {
         unitIn = (Spinner) findViewById(R.id.unitin);
         buttonClear = (Button) findViewById(R.id.clear);
         unitSpinner = (Spinner) findViewById(R.id.unitin);
+        buttonSave = (Button) findViewById(R.id.save);
 
-        // Tag for the number of new ingredient rows added
-        buttonAdd.setTag(1);
 
         // clears top ingredient field
         buttonClear.setOnClickListener(new OnClickListener() {
@@ -69,14 +71,11 @@ public class NewRecipe extends AppCompatActivity {
             }
         });
 
+
         // Add ingredient row
         buttonAdd.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-
-                final int rowsAdded = (Integer)arg0.getTag();
-                arg0.setTag(rowsAdded+1);
-
                 LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View addView = layoutInflater.inflate(R.layout.cardview_new_ingredient, null);
 
@@ -90,7 +89,6 @@ public class NewRecipe extends AppCompatActivity {
 
                     @Override
                     public void onClick(View v) {
-                        v.setTag(rowsAdded-1);
                         ((LinearLayout) addView.getParent()).removeView(addView);
                     }
                 });
@@ -99,7 +97,32 @@ public class NewRecipe extends AppCompatActivity {
             }
         });
 
+        // Save ingredients to database
+        buttonSave.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v2) {
+
+                ViewGroup viewGroup = (ViewGroup) container;
+                for (int j = 0; j < viewGroup.getChildCount(); j++){
+
+                    View child = viewGroup.getChildAt(j);
+                    ViewGroup group = (ViewGroup) child;
+                    for (int i = 0; i < 3; i++){
+                        ((EditText)group.getChildAt(0)).getText();
+                        ((EditText)group.getChildAt(1)).getText();
+                        ((Spinner)group.getChildAt(2)).getSelectedItem();
+                    }
+
+                }
+
+
+            }
+
+        });
+
     }
+
+
 
 
 
@@ -121,6 +144,8 @@ public class NewRecipe extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.tick_button:
+
+
 
                 return true;
             default:
