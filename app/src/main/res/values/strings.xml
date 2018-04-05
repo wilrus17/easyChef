@@ -17,7 +17,7 @@
         <item>lb</item>
         <item>tsp</item>
         <item>Tbsp</item>
-        <item>l</item>
+        <item>ml</item>
         <item>cup</item>
     </string-array>
 </resources>

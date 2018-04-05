@@ -1,6 +1,7 @@
 package tastepad.app;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -16,7 +17,8 @@ import java.util.List;
 
 public class MyRecipes extends AppCompatActivity {
 
-    List<Recipe> Recipe1;
+    private MyDBHandler db;
+    private List<Recipe> recipes = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,15 +35,25 @@ public class MyRecipes extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        // -----------REPLACE BELOW WITH SQLITE QUERY-----------------------------
-        Recipe1 = new ArrayList<>();
-        Recipe1.add(new Recipe("placeholder recipe name", "a nice meal", "Desert"));
+
 
         RecyclerView myrv = findViewById(R.id.myrecipes_recyclerview);
-        RecyclerViewAdapter myAdapter = new RecyclerViewAdapter(this, Recipe1);
+        RecyclerViewAdapter myAdapter = new RecyclerViewAdapter(this, recipes);
         myrv.setLayoutManager(new GridLayoutManager(this, 2));
         myrv.setAdapter(myAdapter);
-    }
+            db = new MyDBHandler(this);
+            recipes = new ArrayList<>();
+            recipes = db.getRecipes();
+
+
+        }
+
+
+
+
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

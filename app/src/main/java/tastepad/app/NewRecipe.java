@@ -10,17 +10,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +38,10 @@ public class NewRecipe extends AppCompatActivity {
     Spinner unitSpinner;
     Button buttonClear;
     Button buttonSave;
+    EditText recipeTitle;
+    MyDBHandler dbHandler;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,15 +57,20 @@ public class NewRecipe extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
+        recipeTitle = (EditText) findViewById(R.id.title_input);
+
         // defining each ingredient field and the layout
+
         textIn = (EditText) findViewById(R.id.textin);
         quantityIn = (EditText) findViewById(R.id.quantityin);
         buttonAdd = (Button) findViewById(R.id.add);
         container = (LinearLayout) findViewById(R.id.new_ingredient_layout);
         unitIn = (Spinner) findViewById(R.id.unitin);
         buttonClear = (Button) findViewById(R.id.clear);
-        unitSpinner = (Spinner) findViewById(R.id.unitin);
         buttonSave = (Button) findViewById(R.id.save);
+
+
+
 
 
         // clears top ingredient field
@@ -79,9 +91,6 @@ public class NewRecipe extends AppCompatActivity {
                 LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View addView = layoutInflater.inflate(R.layout.cardview_new_ingredient, null);
 
-                EditText textOut = (EditText) addView.findViewById(R.id.new_ingredient_text);
-                EditText quantityOut = (EditText) addView.findViewById(R.id.new_ingredient_quantity);
-                Spinner unitOut = (Spinner) addView.findViewById(R.id.new_ingredient_unit);
 
                 // Remove an ingredient row
                 Button buttonRemove = (Button) addView.findViewById(R.id.remove);
@@ -97,21 +106,20 @@ public class NewRecipe extends AppCompatActivity {
             }
         });
 
-        // Save ingredients to database
+        // Save recipe to database
         buttonSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v2) {
 
                 ViewGroup viewGroup = (ViewGroup) container;
                 for (int j = 0; j < viewGroup.getChildCount(); j++){
-
                     View child = viewGroup.getChildAt(j);
                     ViewGroup group = (ViewGroup) child;
-                    for (int i = 0; i < 3; i++){
-                        ((EditText)group.getChildAt(0)).getText();
-                        ((EditText)group.getChildAt(1)).getText();
-                        ((Spinner)group.getChildAt(2)).getSelectedItem();
-                    }
+                    ((EditText)group.getChildAt(0)).getText().toString();
+                    ((EditText)group.getChildAt(1)).getText().toString();
+                    ((Spinner)group.getChildAt(2)).getSelectedItem().toString();
+
+
 
                 }
 
