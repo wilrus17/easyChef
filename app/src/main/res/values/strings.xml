@@ -13,11 +13,11 @@
     <string name="btnDisplay">Show</string>
 
     <string-array name="units_array">
+        <item></item>
         <item>g</item>
         <item>lb</item>
-        <item>tsp</item>
+        <item>oz</item>
         <item>Tbsp</item>
         <item>ml</item>
-        <item>cup</item>
     </string-array>
 </resources>

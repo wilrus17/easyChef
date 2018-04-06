@@ -14,10 +14,51 @@ import java.util.List;
  */
 
 public class MyDBHandler extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "Recipes.db";
-    public static final String TABLE_RECIPE = "recipe_table";
-    public static final String COLUMN_ID = "recipe_id";
-    public static final String COLUMN_RECIPENAME = "recipe_name";
+    private static final String DATABASE_NAME = "Recipes.db";
+    private static final int DATABASE_VERISON = 1;
+
+    // recipes table & columns
+    public static final String TABLE_RECIPES = "Recipes";
+    public static final String RECIPE_ID = "_recipe_id";
+    public static final String RECIPE_NAME = "recipe_name";
+    public static final String RECIPE_INSTRUCTIONS = "instructions";
+
+    // ingredients table & columns
+    public static final String TABLE_INGREDIENTS = "Ingredients";
+    public static final String INGREDIENT_ID= "_ingredient_id";
+    public static final String INGREDIENT_NAME = "ingredient_name";
+
+    // recipe-ingredients table & columns
+    public static final String TABLE_RECIPE_INGREDIENTS = "RecipeIngredients";
+    public static final String RI_RECIPE_ID = "_recipe_id{01}";
+    public static final String RI_INGREDIENT_ID = "_ingredient_id{02}";
+    public static final String RI_INGREDIENT_QUANTITY ="ingredient_quantity";
+    public static final String RI_INGREDIENT_UNIT = "ingredient_unit";
+
+    // create table statements
+    final String CREATE_TABLE_RECIPES = "CREATE TABLE " +
+            TABLE_RECIPES + "(" +
+            RECIPE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            RECIPE_NAME + " TEXT, " +
+            RECIPE_INSTRUCTIONS + " TEXT " +
+            ")";
+
+    final String CREATE_TABLE_INGREDIENTS = "CREATE TABLE " +
+            TABLE_INGREDIENTS + "(" +
+            INGREDIENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            INGREDIENT_NAME + " TEXT " +
+            ")";
+
+    final String CREATE_TABLE_RECIPE_INGREDIENTS = "CREATE TABLE " +
+           TABLE_RECIPE_INGREDIENTS + "(" +
+            RI_RECIPE_ID + " INTEGER NOT NULL FOREIGN KEY REFERENCES TABLE_RECIPES (RECIPE_ID)," +
+            RI_INGREDIENT_ID + " INTEGER NOT NULL FOREIGN KEY REFERENCES TABLE_INGREDIENTS (INGREDIENTS_ID)," +
+            "PRIMARY KEY (RI_RECIPE_ID, RI_INGREDIENT_ID)" +
+            RI_INGREDIENT_QUANTITY + " REAL, " +
+            RI_INGREDIENT_UNIT + " TEXT " +
+            ")";
+
+
 
 
     public MyDBHandler(Context context) {
@@ -26,27 +67,39 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String query = "CREATE TABLE " + TABLE_RECIPE + "(" +
-                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_RECIPENAME + " TEXT " +
-                ");";
-        db.execSQL(query);
-    }
+
+        // creating required tables
+        db.execSQL(CREATE_TABLE_RECIPES);
+        db.execSQL(CREATE_TABLE_INGREDIENTS);
+        db.execSQL(CREATE_TABLE_RECIPE_INGREDIENTS);
+
+     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECIPE);
+        // on upgrade drop old tables
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECIPES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_INGREDIENTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECIPE_INGREDIENTS);
+
+        // create new tables
         onCreate(db);
     }
 
-    //Add new row to database
-    public void addRecipe(String recipe) {
+
+    // create new recipe
+    public void createRecipe(Recipe recipe) {
         ContentValues values = new ContentValues();
-        values.put(COLUMN_RECIPENAME, recipe);
+        values.put(RECIPE_NAME, Recipe.getRecipename());
+        values.put(RECIPE_INSTRUCTIONS, Recipe.getInstructions());
         SQLiteDatabase db = getWritableDatabase();
-        db.insert(TABLE_RECIPE, null, values);
+
+        // new row to table
+        db.insert(TABLE_RECIPES, null, values);
         db.close();
     }
+
+    // delete a recipe
 
     public void deleteRecipe(String recipeId) {
         SQLiteDatabase db = getWritableDatabase();
@@ -75,3 +128,4 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     }
 }
+

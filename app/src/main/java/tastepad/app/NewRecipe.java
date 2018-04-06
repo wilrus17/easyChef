@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,12 +36,10 @@ public class NewRecipe extends AppCompatActivity {
     Spinner unitIn;
     Button buttonAdd;
     LinearLayout container;
-    Spinner unitSpinner;
     Button buttonClear;
     Button buttonSave;
     EditText recipeTitle;
     MyDBHandler dbHandler;
-
 
 
     @Override
@@ -129,6 +128,9 @@ public class NewRecipe extends AppCompatActivity {
         });
 
     }
+
+
+
 
 
 
