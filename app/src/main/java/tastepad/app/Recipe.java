@@ -13,6 +13,17 @@ public class Recipe {
         this.instructions = instructions;
     }
 
+    public Recipe(String recipename, String instructions) {
+        this.recipename = recipename;
+        this.instructions = instructions;
+    }
+
+    public Recipe(){
+
+    }
+
+
+
     // setters
     public void set_id(int _id) {
         this._id = _id;

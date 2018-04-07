@@ -39,7 +39,8 @@ public class NewRecipe extends AppCompatActivity {
     Button buttonClear;
     Button buttonSave;
     EditText recipeTitle;
-    MyDBHandler dbHandler;
+    MyDBHandler db;
+    EditText instructions;
 
 
     @Override
@@ -56,10 +57,11 @@ public class NewRecipe extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
+        // defining recipe title and instructions
         recipeTitle = (EditText) findViewById(R.id.title_input);
+        instructions = (EditText) findViewById(R.id.instructionsIn);
 
         // defining each ingredient field and the layout
-
         textIn = (EditText) findViewById(R.id.textin);
         quantityIn = (EditText) findViewById(R.id.quantityin);
         buttonAdd = (Button) findViewById(R.id.add);
@@ -67,12 +69,9 @@ public class NewRecipe extends AppCompatActivity {
         unitIn = (Spinner) findViewById(R.id.unitin);
         buttonClear = (Button) findViewById(R.id.clear);
         buttonSave = (Button) findViewById(R.id.save);
+        db = new MyDBHandler(this);
 
-
-
-
-
-        // clears top ingredient field
+        // clear top ingredient field
         buttonClear.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,16 +81,14 @@ public class NewRecipe extends AppCompatActivity {
             }
         });
 
-
-        // Add ingredient row
+        // ingredient add, remove row
         buttonAdd.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View addView = layoutInflater.inflate(R.layout.cardview_new_ingredient, null);
 
-
-                // Remove an ingredient row
+                // remove an ingredient row
                 Button buttonRemove = (Button) addView.findViewById(R.id.remove);
                 buttonRemove.setOnClickListener(new OnClickListener() {
 
@@ -100,16 +97,23 @@ public class NewRecipe extends AppCompatActivity {
                         ((LinearLayout) addView.getParent()).removeView(addView);
                     }
                 });
-
+                // add an ingredient row
                 container.addView(addView);
             }
         });
 
-        // Save recipe to database
+        // save recipe to database
         buttonSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v2) {
 
+                // save recipe title and instructions to recipes_table
+                Recipe recipe = new Recipe();
+                recipe.setRecipename(recipeTitle.getText().toString());
+                recipe.setInstructions(instructions.getText().toString());
+                db.createRecipe(recipe);
+
+                // save recipe ingredients to table
                 ViewGroup viewGroup = (ViewGroup) container;
                 for (int j = 0; j < viewGroup.getChildCount(); j++){
                     View child = viewGroup.getChildAt(j);
@@ -117,10 +121,17 @@ public class NewRecipe extends AppCompatActivity {
                     ((EditText)group.getChildAt(0)).getText().toString();
                     ((EditText)group.getChildAt(1)).getText().toString();
                     ((Spinner)group.getChildAt(2)).getSelectedItem().toString();
-
-
-
                 }
+
+
+                // close this activity and go back to MyRecipes
+                finish();
+
+
+
+
+
+
 
 
             }
@@ -128,13 +139,6 @@ public class NewRecipe extends AppCompatActivity {
         });
 
     }
-
-
-
-
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -150,18 +154,9 @@ public class NewRecipe extends AppCompatActivity {
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.tick_button:
 
 
 
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
 }
 

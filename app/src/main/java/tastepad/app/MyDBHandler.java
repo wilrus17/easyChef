@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 public class MyDBHandler extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "Recipes.db";
+    private static final String DATABASE_NAME = "RecipesDB.db";
     private static final int DATABASE_VERISON = 1;
 
     // recipes table & columns
@@ -30,8 +30,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     // recipe-ingredients table & columns
     public static final String TABLE_RECIPE_INGREDIENTS = "RecipeIngredients";
-    public static final String RI_RECIPE_ID = "_recipe_id{01}";
-    public static final String RI_INGREDIENT_ID = "_ingredient_id{02}";
+    public static final String RI_RECIPE_ID = "_recipe_id01";
+    public static final String RI_INGREDIENT_ID = "_ingredient_id02";
     public static final String RI_INGREDIENT_QUANTITY ="ingredient_quantity";
     public static final String RI_INGREDIENT_UNIT = "ingredient_unit";
 
@@ -49,6 +49,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
             INGREDIENT_NAME + " TEXT " +
             ")";
 
+    /*
     final String CREATE_TABLE_RECIPE_INGREDIENTS = "CREATE TABLE " +
            TABLE_RECIPE_INGREDIENTS + "(" +
             RI_RECIPE_ID + " INTEGER NOT NULL FOREIGN KEY REFERENCES TABLE_RECIPES (RECIPE_ID)," +
@@ -58,7 +59,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
             RI_INGREDIENT_UNIT + " TEXT " +
             ")";
 
-
+*/
 
 
     public MyDBHandler(Context context) {
@@ -71,7 +72,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         // creating required tables
         db.execSQL(CREATE_TABLE_RECIPES);
         db.execSQL(CREATE_TABLE_INGREDIENTS);
-        db.execSQL(CREATE_TABLE_RECIPE_INGREDIENTS);
+       // db.execSQL(CREATE_TABLE_RECIPE_INGREDIENTS);
 
      }
 
@@ -88,7 +89,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
 
     // create new recipe
-    public void createRecipe(Recipe recipe) {
+    public void createRecipe(Recipe Recipe) {
         ContentValues values = new ContentValues();
         values.put(RECIPE_NAME, Recipe.getRecipename());
         values.put(RECIPE_INSTRUCTIONS, Recipe.getInstructions());
@@ -103,29 +104,44 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     public void deleteRecipe(String recipeId) {
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("DELETE FROM" + TABLE_RECIPE + " WHERE " + COLUMN_ID + "=\"" + recipeId + "\";");
+
 
     }
 
     public List<Recipe> getRecipes() {
 
-        String fetchQuery = "SELECT * from " + TABLE_RECIPE; // sql query to fetch data
+        // sql query to fetch data
+        String fetchQuery = "SELECT * from " + TABLE_RECIPES;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(fetchQuery, null);
-        List<Recipe> recipes = new ArrayList<>();
-        while (cursor.moveToNext()) {
-            Recipe recipe = new Recipe(cursor.toString());
-            String fetchedRecipe =
-                    cursor.getString(cursor.getColumnIndex(COLUMN_RECIPENAME));
-            recipe.setRecipename(fetchedRecipe); // This should be a method in your Recipe.class to set the value for the object
+        List<Recipe> recipeList = new ArrayList<>();
 
-            recipes.add(recipe);
+        // transverse through all rows and add to list
+        while (cursor.moveToNext()) {
+            Recipe recipe = new Recipe();
+            String fetchedRecipeId =
+                    cursor.getString(cursor.getColumnIndex(RECIPE_ID));
+            String fetchedRecipe =
+                    cursor.getString(cursor.getColumnIndex(RECIPE_NAME));
+            String fetchedRecipeInstructions =
+                    cursor.getString(cursor.getColumnIndex(RECIPE_INSTRUCTIONS));
+
+            recipe.setRecipename(fetchedRecipeId);
+            recipe.setRecipename(fetchedRecipe);
+            recipe.setInstructions(fetchedRecipeInstructions);
+
+            // add record to list
+
+            recipeList.add(recipe);
         }
         cursor.close();
         db.close();
 
-        return recipes;
+        // return recipe list
+        return recipeList;
 
     }
+
+
 }
 

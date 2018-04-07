@@ -2,6 +2,7 @@ package tastepad.app;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
@@ -12,33 +13,47 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
 
     private Context mContext;
-    private List<Recipe> mData;
+    private ArrayList<Recipe> listRecipe;
+    private ArrayList<Recipe> mFilteredList;
 
-    public RecyclerViewAdapter(Context mContext, List<Recipe> mData) {
+    public RecyclerViewAdapter(ArrayList<Recipe> listRecipe, Context mContext) {
 
         this.mContext = mContext;
-        this.mData = mData;
+        this.listRecipe = listRecipe;
+        this.mFilteredList = listRecipe;
+    }
 
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
+
+        public AppCompatTextView textViewRecipeTitle;
+        public ImageView img_RecipeThumbnail;
+
+        public MyViewHolder(View view) {
+            super(view);
+            textViewRecipeTitle = (AppCompatTextView) itemView.findViewById(R.id.recipe_title);
+            img_RecipeThumbnail = (ImageView) itemView.findViewById(R.id.recipe_img);
+        }
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-        View view;
+        // inflating recycler item view (cardview)
+        View itemView;
         LayoutInflater mInflater = LayoutInflater.from(mContext);
-        view = mInflater.inflate(R.layout.cardview_item_recipe,parent,false);
-        return new MyViewHolder(view);
+        itemView = mInflater.inflate(R.layout.cardview_item_recipe,parent,false);
+        return new MyViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
-        holder.tv_recipe_title.setText(mData.get(position).getRecipename());
+        holder.textViewRecipeTitle.setText(listRecipe.get(position).getRecipename());
         // get image for recipe cardView
         // holder.img_recipe_thumbnail.setImageResource(mData.get(position).getThumbnail());
 
@@ -46,21 +61,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
-        return mData.size();
+        return mFilteredList.size();
     }
-
-
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
-
-        TextView tv_recipe_title;
-        ImageView img_recipe_thumbnail;
-
-        public MyViewHolder(View itemView) {
-            super(itemView);
-
-            tv_recipe_title = (TextView) itemView.findViewById(R.id.recipe_title);
-            img_recipe_thumbnail = (ImageView) itemView.findViewById(R.id.recipe_img);
-        }
-    }
-
 }
