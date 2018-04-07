@@ -123,17 +123,11 @@ public class NewRecipe extends AppCompatActivity {
                     ((Spinner)group.getChildAt(2)).getSelectedItem().toString();
                 }
 
+                // recipe creation confirmation
+                Toast.makeText(getApplicationContext(), "Recipe Added!", Toast.LENGTH_SHORT).show();
 
-                // close this activity and go back to MyRecipes
+                // close the activity and go back to MyRecipes
                 finish();
-
-
-
-
-
-
-
-
             }
 
         });

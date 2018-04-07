@@ -23,16 +23,13 @@ public class Recipe {
     }
 
 
-
     // setters
     public void set_id(int _id) {
         this._id = _id;
     }
-
     public void setRecipename(String recipename) {
         this.recipename = recipename;
     }
-
     public void setInstructions(String instructions) {
         this.instructions = instructions;
     }
@@ -41,11 +38,9 @@ public class Recipe {
     public int get_id() {
         return _id;
     }
-
     public String getRecipename() {
         return recipename;
     }
-
     public String getInstructions() {
         return instructions;
     }

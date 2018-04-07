@@ -119,10 +119,13 @@ public class MyDBHandler extends SQLiteOpenHelper {
         // transverse through all rows and add to list
         while (cursor.moveToNext()) {
             Recipe recipe = new Recipe();
+
             String fetchedRecipeId =
                     cursor.getString(cursor.getColumnIndex(RECIPE_ID));
+
             String fetchedRecipe =
                     cursor.getString(cursor.getColumnIndex(RECIPE_NAME));
+
             String fetchedRecipeInstructions =
                     cursor.getString(cursor.getColumnIndex(RECIPE_INSTRUCTIONS));
 

@@ -52,6 +52,7 @@ public class MyRecipes extends AppCompatActivity {
 
     }
 
+
     private void initialiseViews() {
         recyclerViewRecipe = (RecyclerView) findViewById(R.id.myrecipes_recyclerview);
 
@@ -89,11 +90,9 @@ public class MyRecipes extends AppCompatActivity {
         }.execute();
     }
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu; this adds items to the action bar
         getMenuInflater().inflate(R.menu.menuplus, menu);
         return true;
     }
@@ -107,6 +106,7 @@ public class MyRecipes extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            // click + to create new recipe
             case R.id.plus_button:
                 Intent i = new Intent(this,NewRecipe.class);
                 this.startActivity(i);
@@ -114,6 +114,13 @@ public class MyRecipes extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        // refresh with any new recipes
+        getDataFromSQLite();
     }
 
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.security.auth.Subject;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
 
@@ -33,11 +36,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         public AppCompatTextView textViewRecipeTitle;
         public ImageView img_RecipeThumbnail;
+        public View view;
 
         public MyViewHolder(View view) {
             super(view);
+            this.view = view;
+
             textViewRecipeTitle = (AppCompatTextView) itemView.findViewById(R.id.recipe_title);
             img_RecipeThumbnail = (ImageView) itemView.findViewById(R.id.recipe_img);
+
         }
     }
 
@@ -51,7 +58,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
         holder.textViewRecipeTitle.setText(listRecipe.get(position).getRecipename());
         // get image for recipe cardView
