@@ -49,17 +49,16 @@ public class MyDBHandler extends SQLiteOpenHelper {
             INGREDIENT_NAME + " TEXT " +
             ")";
 
-    /*
     final String CREATE_TABLE_RECIPE_INGREDIENTS = "CREATE TABLE " +
-           TABLE_RECIPE_INGREDIENTS + "(" +
-            RI_RECIPE_ID + " INTEGER NOT NULL FOREIGN KEY REFERENCES TABLE_RECIPES (RECIPE_ID)," +
-            RI_INGREDIENT_ID + " INTEGER NOT NULL FOREIGN KEY REFERENCES TABLE_INGREDIENTS (INGREDIENTS_ID)," +
-            "PRIMARY KEY (RI_RECIPE_ID, RI_INGREDIENT_ID)" +
+            TABLE_RECIPE_INGREDIENTS + "(" +
+            RI_RECIPE_ID + " INTEGER NOT NULL ," +
+            RI_INGREDIENT_ID + " INTEGER NOT NULL, " +
             RI_INGREDIENT_QUANTITY + " REAL, " +
-            RI_INGREDIENT_UNIT + " TEXT " +
-            ")";
-
-*/
+            RI_INGREDIENT_UNIT + " TEXT, " +
+            " PRIMARY KEY +("+ RI_RECIPE_ID +","+ RI_INGREDIENT_ID +")," +
+            " FOREIGN KEY +("+ RI_RECIPE_ID +") REFERENCES "+ TABLE_RECIPES +"("+ RECIPE_ID +")," +
+            " FOREIGN KEY +("+ RI_INGREDIENT_ID +") REFERENCES "+ TABLE_INGREDIENTS +"("+ INGREDIENT_ID +
+            "),";
 
 
     public MyDBHandler(Context context) {
@@ -72,7 +71,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         // creating required tables
         db.execSQL(CREATE_TABLE_RECIPES);
         db.execSQL(CREATE_TABLE_INGREDIENTS);
-       // db.execSQL(CREATE_TABLE_RECIPE_INGREDIENTS);
+        db.execSQL(CREATE_TABLE_RECIPE_INGREDIENTS);
 
      }
 

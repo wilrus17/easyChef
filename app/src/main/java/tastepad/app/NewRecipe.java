@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -71,7 +72,7 @@ public class NewRecipe extends AppCompatActivity {
         buttonSave = (Button) findViewById(R.id.save);
         db = new MyDBHandler(this);
 
-        // clear top ingredient field
+        // clear top ingredient row
         buttonClear.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,7 +89,7 @@ public class NewRecipe extends AppCompatActivity {
                 LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View addView = layoutInflater.inflate(R.layout.cardview_new_ingredient, null);
 
-                // remove an ingredient row
+                // remove row
                 Button buttonRemove = (Button) addView.findViewById(R.id.remove);
                 buttonRemove.setOnClickListener(new OnClickListener() {
 
@@ -97,7 +98,7 @@ public class NewRecipe extends AppCompatActivity {
                         ((LinearLayout) addView.getParent()).removeView(addView);
                     }
                 });
-                // add an ingredient row
+                // add row
                 container.addView(addView);
             }
         });
@@ -107,27 +108,38 @@ public class NewRecipe extends AppCompatActivity {
             @Override
             public void onClick(View v2) {
 
-                // save recipe title and instructions to recipes_table
-                Recipe recipe = new Recipe();
-                recipe.setRecipename(recipeTitle.getText().toString());
-                recipe.setInstructions(instructions.getText().toString());
-                db.createRecipe(recipe);
+                // error if no recipe title input
+                if (TextUtils.isEmpty(recipeTitle.getText().toString())) {
+                    recipeTitle.setError("Your recipe must have a title.");
+                    return;
 
-                // save recipe ingredients to table
-                ViewGroup viewGroup = (ViewGroup) container;
-                for (int j = 0; j < viewGroup.getChildCount(); j++){
-                    View child = viewGroup.getChildAt(j);
-                    ViewGroup group = (ViewGroup) child;
-                    ((EditText)group.getChildAt(0)).getText().toString();
-                    ((EditText)group.getChildAt(1)).getText().toString();
-                    ((Spinner)group.getChildAt(2)).getSelectedItem().toString();
+                } else {
+
+                    // save recipe title and instructions to recipes_table
+                    Recipe recipe = new Recipe();
+                    recipe.setRecipename(recipeTitle.getText().toString());
+                    recipe.setInstructions(instructions.getText().toString());
+                    db.createRecipe(recipe);
+
+                    // identify each ingredient, quantity, unit
+                    ViewGroup viewGroup = (ViewGroup) container;
+                    for (int j = 0; j < viewGroup.getChildCount(); j++) {
+                        View child = viewGroup.getChildAt(j);
+                        ViewGroup group = (ViewGroup) child;
+
+                        String ingredient = ((EditText) group.getChildAt(0)).getText().toString();
+                        String quantity = ((EditText) group.getChildAt(1)).getText().toString();
+                        String unit = ((Spinner) group.getChildAt(2)).getSelectedItem().toString();
+                    }
+
+                    int recipeId = recipe.get_id();
+
+                    // recipe creation confirmation
+                    Toast.makeText(getApplicationContext(), "Recipe Added!", Toast.LENGTH_SHORT).show();
+
+                    // close the activity and go back to MyRecipes
+                    finish();
                 }
-
-                // recipe creation confirmation
-                Toast.makeText(getApplicationContext(), "Recipe Added!", Toast.LENGTH_SHORT).show();
-
-                // close the activity and go back to MyRecipes
-                finish();
             }
 
         });
