@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.fridge_card : i = new Intent(this,MyFridge.class);startActivity(i); break;
             case R.id.recipes_card : i = new Intent(this,MyRecipes.class);startActivity(i); break;
             case R.id.shopping_card : i = new Intent(this,ShoppingList.class);startActivity(i); break;
-            case R.id.explore_card : i = new Intent(this,activity_recipe_screen.class);startActivity(i); break;
+            case R.id.explore_card : i = new Intent(this,RecipeActivity.class);startActivity(i); break;
             default:break ;
 
 

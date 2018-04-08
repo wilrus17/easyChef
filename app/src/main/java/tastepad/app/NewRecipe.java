@@ -127,12 +127,27 @@ public class NewRecipe extends AppCompatActivity {
                         View child = viewGroup.getChildAt(j);
                         ViewGroup group = (ViewGroup) child;
 
-                        String ingredient = ((EditText) group.getChildAt(0)).getText().toString();
-                        String quantity = ((EditText) group.getChildAt(1)).getText().toString();
-                        String unit = ((Spinner) group.getChildAt(2)).getSelectedItem().toString();
-                    }
+                        String ingredientName = ((EditText) group.getChildAt(0)).getText().toString();
+                        String ingredientQuantity = ((EditText) group.getChildAt(1)).getText().toString();
+                        String ingredientUnit = ((Spinner) group.getChildAt(2)).getSelectedItem().toString();
 
-                    int recipeId = recipe.get_id();
+                        // ingredient to ingredients table
+                        Ingredient ingredient = new Ingredient();
+                        ingredient.setIngredientname(ingredientName);
+                        db.createIngredient(ingredient);
+
+                        // recipe id, ingredient id, quantity, unit to Recipe_Ingredients Link table
+                        int recipeId = recipe.get_id();
+                        int ingredientId = ingredient.get_id();
+
+                        RecipeIngredients recipeIngredients = new RecipeIngredients();
+                        recipeIngredients.setIngredient_id(ingredientId);
+                        recipeIngredients.setRecipe_id(recipeId);
+                        recipeIngredients.setQuantity(ingredientQuantity);
+                        recipeIngredients.setUnit(ingredientUnit);
+                        db.createRecipesIngredients(recipeIngredients);
+
+                    }
 
                     // recipe creation confirmation
                     Toast.makeText(getApplicationContext(), "Recipe Added!", Toast.LENGTH_SHORT).show();

@@ -20,8 +20,9 @@
         <activity android:name=".MyRecipes" />
         <activity android:name=".ShoppingList" />
         <activity android:name=".Explore" />
-        <activity android:name=".activity_recipe_screen"></activity>
         <activity android:name=".NewRecipe" />
+        <activity android:name=".RecipeActivity" />
+        <
     </application>
 
 </manifest>

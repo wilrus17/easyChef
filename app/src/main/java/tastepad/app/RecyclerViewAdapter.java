@@ -41,9 +41,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public MyViewHolder(View view) {
             super(view);
             this.view = view;
+            CardView cardView;
 
             textViewRecipeTitle = (AppCompatTextView) itemView.findViewById(R.id.recipe_title);
             img_RecipeThumbnail = (ImageView) itemView.findViewById(R.id.recipe_img);
+            cardView = (CardView) itemView.findViewById(R.id.cardView);
 
         }
     }
@@ -63,6 +65,27 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.textViewRecipeTitle.setText(listRecipe.get(position).getRecipename());
         // get image for recipe cardView
         // holder.img_recipe_thumbnail.setImageResource(mData.get(position).getThumbnail());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                // passing instructions to fragment
+                Intent intent = new Intent(mContext,FragmentInstructions.class);
+                intent.putExtra("InstructionSet",listRecipe.get(position).getInstructions());
+                // intent.putExtra("Thumbnail",listRecipe.get(position).getThumbnail());
+
+                // passing title to activity
+                Intent i = new Intent(mContext,RecipeActivity.class);
+                i.putExtra("Title",listRecipe.get(position).getRecipename());
+
+                // start the fragments & activity
+                mContext.startActivity(intent);
+                mContext.startActivity(i);
+
+            }
+        });
 
     }
 

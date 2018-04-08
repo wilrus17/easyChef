@@ -42,6 +42,7 @@ public class MyRecipes extends AppCompatActivity {
         setSupportActionBar(toolbar);
         // addtoolbar back arrow
         if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("My Recipes");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
 

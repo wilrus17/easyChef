@@ -25,14 +25,14 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     // ingredients table & columns
     public static final String TABLE_INGREDIENTS = "Ingredients";
-    public static final String INGREDIENT_ID= "_ingredient_id";
+    public static final String INGREDIENT_ID = "_ingredient_id";
     public static final String INGREDIENT_NAME = "ingredient_name";
 
     // recipe-ingredients table & columns
     public static final String TABLE_RECIPE_INGREDIENTS = "RecipeIngredients";
     public static final String RI_RECIPE_ID = "_recipe_id01";
     public static final String RI_INGREDIENT_ID = "_ingredient_id02";
-    public static final String RI_INGREDIENT_QUANTITY ="ingredient_quantity";
+    public static final String RI_INGREDIENT_QUANTITY = "ingredient_quantity";
     public static final String RI_INGREDIENT_UNIT = "ingredient_unit";
 
     // create table statements
@@ -46,7 +46,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     final String CREATE_TABLE_INGREDIENTS = "CREATE TABLE " +
             TABLE_INGREDIENTS + "(" +
             INGREDIENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            INGREDIENT_NAME + " TEXT " +
+            INGREDIENT_NAME + " TEXT NOT NULL UNIQUE " +
             ")";
 
     final String CREATE_TABLE_RECIPE_INGREDIENTS = "CREATE TABLE " +
@@ -54,11 +54,11 @@ public class MyDBHandler extends SQLiteOpenHelper {
             RI_RECIPE_ID + " INTEGER NOT NULL ," +
             RI_INGREDIENT_ID + " INTEGER NOT NULL, " +
             RI_INGREDIENT_QUANTITY + " REAL, " +
-            RI_INGREDIENT_UNIT + " TEXT, " +
-            " PRIMARY KEY +("+ RI_RECIPE_ID +","+ RI_INGREDIENT_ID +")," +
-            " FOREIGN KEY +("+ RI_RECIPE_ID +") REFERENCES "+ TABLE_RECIPES +"("+ RECIPE_ID +")," +
-            " FOREIGN KEY +("+ RI_INGREDIENT_ID +") REFERENCES "+ TABLE_INGREDIENTS +"("+ INGREDIENT_ID +
-            "),";
+            RI_INGREDIENT_UNIT + " TEXT," +
+            " PRIMARY KEY (" + RI_RECIPE_ID + "," + RI_INGREDIENT_ID + ")," +
+            " FOREIGN KEY (" + RI_RECIPE_ID + ") REFERENCES " + TABLE_RECIPES + "(" + RECIPE_ID + ")," +
+            " FOREIGN KEY (" + RI_INGREDIENT_ID + ") REFERENCES " + TABLE_INGREDIENTS + "(" + INGREDIENT_ID + ")" +
+            ")";
 
 
     public MyDBHandler(Context context) {
@@ -73,7 +73,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_INGREDIENTS);
         db.execSQL(CREATE_TABLE_RECIPE_INGREDIENTS);
 
-     }
+    }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -88,10 +88,10 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
 
     // create new recipe
-    public void createRecipe(Recipe Recipe) {
+    public void createRecipe(Recipe recipe) {
         ContentValues values = new ContentValues();
-        values.put(RECIPE_NAME, Recipe.getRecipename());
-        values.put(RECIPE_INSTRUCTIONS, Recipe.getInstructions());
+        values.put(RECIPE_NAME, recipe.getRecipename());
+        values.put(RECIPE_INSTRUCTIONS, recipe.getInstructions());
         SQLiteDatabase db = getWritableDatabase();
 
         // new row to table
@@ -100,7 +100,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
     }
 
     // delete a recipe
-
     public void deleteRecipe(String recipeId) {
         SQLiteDatabase db = getWritableDatabase();
 
@@ -144,6 +143,31 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     }
 
+    // add ingredient
+    public void createIngredient(Ingredient ingredient) {
+        ContentValues values = new ContentValues();
+        values.put(INGREDIENT_NAME, ingredient.getIngredientname());
+        SQLiteDatabase db = getWritableDatabase();
+        // new row to table
+        db.insert(TABLE_INGREDIENTS, null, values);
+        db.close();
+    }
+
+    // create recipe-ingredients relation with quantity and unit
+    public void createRecipesIngredients(RecipeIngredients recipeIngredient) {
+        ContentValues values = new ContentValues();
+        values.put(RI_RECIPE_ID, recipeIngredient.getRecipe_id());
+        values.put(RI_INGREDIENT_ID, recipeIngredient.getIngredient_id());
+        values.put(RI_INGREDIENT_QUANTITY, recipeIngredient.getQuantity());
+        values.put(RI_INGREDIENT_UNIT, recipeIngredient.getUnit());
+        SQLiteDatabase db = getWritableDatabase();
+        // new row to table
+        db.insert(TABLE_RECIPE_INGREDIENTS, null, values);
+        db.close();
+    }
 
 }
+
+
+
 
