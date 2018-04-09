@@ -106,6 +106,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     }
 
+
     public List<Recipe> getRecipes() {
 
         // sql query to fetch data

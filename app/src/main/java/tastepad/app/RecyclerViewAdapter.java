@@ -2,6 +2,7 @@ package tastepad.app;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.CardView;
@@ -24,6 +25,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private Context mContext;
     private ArrayList<Recipe> listRecipe;
     private ArrayList<Recipe> mFilteredList;
+    private MyDBHandler db;
 
     public RecyclerViewAdapter(ArrayList<Recipe> listRecipe, Context mContext) {
 
@@ -70,19 +72,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public void onClick(View v) {
 
-
-                // passing instructions to fragment
-                Intent intent = new Intent(mContext,FragmentInstructions.class);
-                intent.putExtra("InstructionSet",listRecipe.get(position).getInstructions());
-                // intent.putExtra("Thumbnail",listRecipe.get(position).getThumbnail());
-
-                // passing title to activity
+                // passing title & instructions to RecipeActivity
                 Intent i = new Intent(mContext,RecipeActivity.class);
                 i.putExtra("Title",listRecipe.get(position).getRecipename());
-
-                // start the fragments & activity
-                mContext.startActivity(intent);
+                i.putExtra("Instructions",listRecipe.get(position).getInstructions());
                 mContext.startActivity(i);
+
+                // fetching ingredients & send to Recipe Activity
+
 
             }
         });
@@ -94,3 +91,5 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return mFilteredList.size();
     }
 }
+
+

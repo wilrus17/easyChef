@@ -22,7 +22,6 @@
         <activity android:name=".Explore" />
         <activity android:name=".NewRecipe" />
         <activity android:name=".RecipeActivity" />
-        <
     </application>
 
 </manifest>
