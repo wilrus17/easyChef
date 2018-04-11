@@ -27,9 +27,9 @@ public class MyRecipes extends AppCompatActivity {
     private RecyclerViewAdapter recyclerViewAdapter;
     private ArrayList<Recipe> listRecipe;
     private RecyclerView recyclerViewRecipe;
-    private MyDBHandler db;
     SearchView searchBox;
     private ArrayList<Recipe> filteredList;
+    MyDBHandler db = new MyDBHandler(this);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,7 +65,6 @@ public class MyRecipes extends AppCompatActivity {
         recyclerViewRecipe.setItemAnimator(new DefaultItemAnimator());
         recyclerViewRecipe.setHasFixedSize(true);
         recyclerViewRecipe.setAdapter(recyclerViewAdapter);
-        db = new MyDBHandler(this);
 
         getDataFromSQLite();
     }

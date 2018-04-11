@@ -36,28 +36,28 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public static final String RI_INGREDIENT_UNIT = "ingredient_unit";
 
     // create table statements
-    final String CREATE_TABLE_RECIPES = "CREATE TABLE " +
+    final String CREATE_TABLE_RECIPES = "CREATE TABLE IF NOT EXISTS " +
             TABLE_RECIPES + "(" +
             RECIPE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             RECIPE_NAME + " TEXT, " +
             RECIPE_INSTRUCTIONS + " TEXT " +
             ")";
 
-    final String CREATE_TABLE_INGREDIENTS = "CREATE TABLE " +
+    final String CREATE_TABLE_INGREDIENTS = "CREATE TABLE IF NOT EXISTS " +
             TABLE_INGREDIENTS + "(" +
             INGREDIENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             INGREDIENT_NAME + " TEXT NOT NULL UNIQUE " +
             ")";
 
-    final String CREATE_TABLE_RECIPE_INGREDIENTS = "CREATE TABLE " +
+    final String CREATE_TABLE_RECIPE_INGREDIENTS = "CREATE TABLE IF NOT EXISTS " +
             TABLE_RECIPE_INGREDIENTS + "(" +
-            RI_RECIPE_ID + " INTEGER NOT NULL ," +
-            RI_INGREDIENT_ID + " INTEGER NOT NULL, " +
+            RECIPE_ID + " INTEGER NOT NULL ," +
+            INGREDIENT_ID + " INTEGER NOT NULL, " +
             RI_INGREDIENT_QUANTITY + " REAL, " +
             RI_INGREDIENT_UNIT + " TEXT," +
-            " PRIMARY KEY (" + RI_RECIPE_ID + "," + RI_INGREDIENT_ID + ")," +
-            " FOREIGN KEY (" + RI_RECIPE_ID + ") REFERENCES " + TABLE_RECIPES + "(" + RECIPE_ID + ")," +
-            " FOREIGN KEY (" + RI_INGREDIENT_ID + ") REFERENCES " + TABLE_INGREDIENTS + "(" + INGREDIENT_ID + ")" +
+            " PRIMARY KEY (" + RECIPE_ID + "," + INGREDIENT_ID + ")," +
+            " FOREIGN KEY (" + RECIPE_ID + ") REFERENCES " + TABLE_RECIPES + "(" + RECIPE_ID + ")," +
+            " FOREIGN KEY (" + INGREDIENT_ID + ") REFERENCES " + TABLE_INGREDIENTS + "(" + INGREDIENT_ID + ")" +
             ")";
 
 
@@ -100,12 +100,27 @@ public class MyDBHandler extends SQLiteOpenHelper {
     }
 
     // delete a recipe
-    public void deleteRecipe(String recipeId) {
+    public void deleteRecipe(int recipeId) {
         SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_RECIPES, RECIPE_ID + " = ?", new String[] {String.valueOf(recipeId)});
+        db.delete(TABLE_RECIPE_INGREDIENTS, RECIPE_ID + " = ?", new String[] {String.valueOf(recipeId)});
+
+    }
+    /*
+
+    public void findIngredients(int recipeId){
+        SQLiteDatabase db = getWritableDatabase();
+        int cPos;  // cursor position
+        Cursor c = db.rawQuery("SELECT INGREDIENT_NAME, RI_INGREDIENT_QUANTITY, RI_INGREDIENT_UNIT FROM "
+        + TABLE_INGREDIENTS + "INNER JOIN " + TABLE_RECIPE_INGREDIENTS + "ON " +
+        TABLE_INGREDIENTS)
+
+        String fetchIngrId = "SELECT RI_INGREDIENT_ID FROM " + TABLE_RECIPE_INGREDIENTS + "WHERE " + RI_RECIPE_ID + "=" + recipeId;
+        String fetchIngr = "SELECT INGREDIENT_NAME FROM " + TABLE_INGREDIENTS + "WHERE " + INGREDIENT_ID + "=" ;
 
 
     }
-
+*/
 
     public List<Recipe> getRecipes() {
 
