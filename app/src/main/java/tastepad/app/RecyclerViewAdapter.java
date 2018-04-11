@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.support.v7.view.ActionMode;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -36,7 +37,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ActionMode mActionmode;
     public int id;
 
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 
 
     public RecyclerViewAdapter(ArrayList<Recipe> listRecipe, Context mContext) {
@@ -44,8 +51,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.mContext = mContext;
         this.listRecipe = listRecipe;
         this.mFilteredList = listRecipe;
-
-
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -65,6 +70,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         }
     }
+
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -87,8 +93,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public void onClick(View v) {
 
+
                 // fetch ingredients and put into an array
-                int recipeId = listRecipe.get(position).get_id();
+
                 //Cursor c = fetchIngredientsById("");
 
 
@@ -98,38 +105,26 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 i.putExtra("Instructions", listRecipe.get(position).getInstructions());
                 i.putExtra("RecipeId", listRecipe.get(position).get_id());
                 mContext.startActivity(i);
-
             }
         });
 
-        // hold to show contextual menu
+        // long click item to show contextual menu
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
 
             @Override
             public boolean onLongClick(View v) {
 
-
-                // get ID
-                Recipe r = listRecipe.get(position);
-                int id = r.get_id();
-
-                // delete from database
-                MyDBHandler db = new MyDBHandler(mContext);
-                db.deleteRecipe(id);
-                db.close();
-                notifyItemRemoved(position);
-
+                // get id of clicked recipe
+                id = listRecipe.get(position).get_id();
+                setId(id);
 
                 if (mActionmode != null)  {
                     return false;
                 }
-
                 mActionmode = ((AppCompatActivity) v.getContext()).startSupportActionMode(mActionModeCallback);
                 return true;
-
             }
         });
-
 
     }
 
@@ -151,6 +146,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             switch (item.getItemId()) {
                 // delete selected recipe
                 case R.id.option_1:
+                    MyDBHandler db = new MyDBHandler(mContext);
+                    db.deleteRecipe(getId());
+                    db.close();
+                    notifyItemRemoved(id);
+                    ((MyRecipes)mContext).finish();
+                    Intent intent = new Intent(mContext, MyRecipes.class);
+                    mContext.startActivity(intent);
                     return true;
 
                 // edit selected recipe
@@ -172,9 +174,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public int getItemCount() {
         return listRecipe.size();
     }
-
-
-
 
 
 }

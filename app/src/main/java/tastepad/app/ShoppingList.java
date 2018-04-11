@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -42,13 +45,19 @@ public class ShoppingList extends AppCompatActivity {
         buildRecyclerView();
 
         editTextInsert = findViewById(R.id.shoppingItemText);
+        editTextInsert.addTextChangedListener(addItemWater);
         buttonInsert =  findViewById(R.id.shoppingItemAdd);
+
+
+
 
         buttonInsert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String ingredient = editTextInsert.getText().toString();
                 insertItem(ingredient);
+                editTextInsert.setText("");
+                Toast.makeText(getApplicationContext(), ingredient + " added", Toast.LENGTH_SHORT).show();
                 saveData();
             }
         });
@@ -111,6 +120,25 @@ public class ShoppingList extends AppCompatActivity {
     }
 
 
+    // disable button if no input text
+    private TextWatcher addItemWater = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String itemInput = editTextInsert.getText().toString().trim();
+
+            buttonInsert.setEnabled(!itemInput.isEmpty());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
 
 

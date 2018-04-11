@@ -14,12 +14,12 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
 
     public static class ShoppingViewHolder extends RecyclerView.ViewHolder {
         public TextView mTextView1;
-        public TextView mTextView2;
+
 
         public ShoppingViewHolder(View itemView) {
             super(itemView);
             mTextView1 = itemView.findViewById(R.id.textView1);
-            mTextView2 = itemView.findViewById(R.id.textView2);
+
         }
     }
 
