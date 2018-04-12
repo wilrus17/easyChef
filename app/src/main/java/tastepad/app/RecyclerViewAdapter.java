@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import android.support.v7.view.ActionMode.Callback;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.security.auth.Subject;
@@ -109,6 +110,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 i.putExtra("Instructions", listRecipe.get(position).getInstructions());
                 i.putExtra("RecipeId", listRecipe.get(position).get_id());
                 i.putExtra("Ingredients", ingredients);
+                Log.i("ingredientsRecycler", Arrays.deepToString(ingredients));
                 mContext.startActivity(i);
             }
         });

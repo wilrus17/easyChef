@@ -10,6 +10,7 @@ import android.util.Log;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -103,6 +104,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+
     // delete a recipe
     public void deleteRecipe(int recipeId) {
         SQLiteDatabase db = getWritableDatabase();
@@ -112,6 +114,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     }
 
+
+    // gets list of Recipes
     public List<Recipe> getRecipes() {
 
         // sql query to fetch data
@@ -173,7 +177,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
     }
 
     // get ingredients for given recipe id
-
     public String[][] getRecipeIngredients(int id) {
         Log.d("int2", "value: " + id);
 
@@ -189,10 +192,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
         int x = c.getCount();
         String[][] ingredientsArray = new String[x][3];
 
-
         // put each row into 2d array
         int i = 0;
-        c.moveToFirst();
         while (c.moveToNext()) {
             String name = c.getString(c.getColumnIndex(INGREDIENT_NAME));
             String quantity = c.getString(c.getColumnIndex(INGREDIENT_QUANTITY));
@@ -200,12 +201,14 @@ public class MyDBHandler extends SQLiteOpenHelper {
             ingredientsArray[i][0] = name;
             ingredientsArray[i][1] = quantity;
             ingredientsArray[i][2] = unit;
-            Log.i("SENDSERVER", "Record Added");
+            Log.i("ingredients", Arrays.deepToString(ingredientsArray));
             i++;
         }
+        Log.i("ingredientsRe", Arrays.deepToString(ingredientsArray));
         return ingredientsArray;
     }
 
+    // recipeId that was just added
     public int getLastRecipeId() {
         int lastRecipeId = 0;
         String query = "SELECT " + RECIPE_ID + " FROM " + TABLE_RECIPES + " ORDER BY " +
@@ -219,6 +222,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return lastRecipeId;
     }
 
+    // ingredientId that was just added
     public int getLastIngredientId() {
         int lastIngredientId = 0;
         String query = "SELECT " + INGREDIENT_ID + " FROM " + TABLE_INGREDIENTS + " ORDER BY " +
@@ -231,6 +235,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
         }
         return lastIngredientId;
     }
+
+
 }
 
 
