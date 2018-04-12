@@ -20,8 +20,7 @@ import android.support.v4.app.FragmentTransaction;
 
 import org.w3c.dom.Text;
 
-public class FragmentInstructions extends Fragment  {
-
+public class FragmentInstructions extends Fragment {
 
 
     public static final FragmentInstructions newInstance(String someInstructions) {
@@ -42,20 +41,8 @@ public class FragmentInstructions extends Fragment  {
         TextView instructions = (TextView) view.findViewById(R.id.instructionsContainer);
         instructions.setText(mInstructions);
         return view;
-
-
     }
-
-
-
-
-
-
-
-
-
 }
-
 
 
 

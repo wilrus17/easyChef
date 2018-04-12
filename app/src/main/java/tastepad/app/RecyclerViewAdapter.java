@@ -1,9 +1,11 @@
 package tastepad.app;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
@@ -33,7 +35,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private Context mContext;
     private ArrayList<Recipe> listRecipe;
     private ArrayList<Recipe> mFilteredList;
-    private MyDBHandler mDbHelper;
+    private MyDBHandler db;
     private ActionMode mActionmode;
     public int id;
 
@@ -93,17 +95,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public void onClick(View v) {
 
+                // fetch ingredients w/ quantity & unit and put into an array
+                int id = listRecipe.get(position).get_id();
+                Log.d("int", "value: " + id);
 
-                // fetch ingredients and put into an array
+                MyDBHandler db = new MyDBHandler(mContext);
 
-                //Cursor c = fetchIngredientsById("");
-
+                String [][] ingredients = db.getRecipeIngredients(id);
 
                 // passing title & instructions to RecipeActivity
                 Intent i = new Intent(mContext, RecipeActivity.class);
                 i.putExtra("Title", listRecipe.get(position).getRecipename());
                 i.putExtra("Instructions", listRecipe.get(position).getInstructions());
                 i.putExtra("RecipeId", listRecipe.get(position).get_id());
+                i.putExtra("Ingredients", ingredients);
                 mContext.startActivity(i);
             }
         });

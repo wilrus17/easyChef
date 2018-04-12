@@ -5,7 +5,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.Cursor;
 import android.content.Context;
 import android.content.ContentValues;
+import android.util.Log;
 
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +18,10 @@ import java.util.List;
 
 public class MyDBHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "RecipesDB.db";
-    private static final int DATABASE_VERISON = 1;
+    private static final int DATABASE_VERISON = 2;
+    public int id;
+    Context mContext;
+    MyDBHandler db;
 
     // recipes table & columns
     public static final String TABLE_RECIPES = "Recipes";
@@ -30,10 +36,9 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     // recipe-ingredients table & columns
     public static final String TABLE_RECIPE_INGREDIENTS = "RecipeIngredients";
-    public static final String RI_RECIPE_ID = "_recipe_id01";
-    public static final String RI_INGREDIENT_ID = "_ingredient_id02";
-    public static final String RI_INGREDIENT_QUANTITY = "ingredient_quantity";
-    public static final String RI_INGREDIENT_UNIT = "ingredient_unit";
+
+    public static final String INGREDIENT_QUANTITY = "ingredient_quantity";
+    public static final String INGREDIENT_UNIT = "ingredient_unit";
 
     // create table statements
     final String CREATE_TABLE_RECIPES = "CREATE TABLE IF NOT EXISTS " +
@@ -51,18 +56,18 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     final String CREATE_TABLE_RECIPE_INGREDIENTS = "CREATE TABLE IF NOT EXISTS " +
             TABLE_RECIPE_INGREDIENTS + "(" +
-            RECIPE_ID + " INTEGER NOT NULL ," +
+            RECIPE_ID + " INTEGER NOT NULL, " +
             INGREDIENT_ID + " INTEGER NOT NULL, " +
-            RI_INGREDIENT_QUANTITY + " REAL, " +
-            RI_INGREDIENT_UNIT + " TEXT," +
-            " PRIMARY KEY (" + RECIPE_ID + "," + INGREDIENT_ID + ")," +
-            " FOREIGN KEY (" + RECIPE_ID + ") REFERENCES " + TABLE_RECIPES + "(" + RECIPE_ID + ")," +
-            " FOREIGN KEY (" + INGREDIENT_ID + ") REFERENCES " + TABLE_INGREDIENTS + "(" + INGREDIENT_ID + ")" +
+            INGREDIENT_QUANTITY + " REAL, " +
+            INGREDIENT_UNIT + " TEXT, " +
+            "PRIMARY KEY (" + RECIPE_ID + "," + INGREDIENT_ID + "), " +
+            "FOREIGN KEY (" + RECIPE_ID + ") REFERENCES " + TABLE_RECIPES + "(" + RECIPE_ID + "), " +
+            "FOREIGN KEY (" + INGREDIENT_ID + ") REFERENCES " + TABLE_INGREDIENTS + "(" + INGREDIENT_ID + ")" +
             ")";
 
 
     public MyDBHandler(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, 2);
     }
 
     @Override
@@ -72,7 +77,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_RECIPES);
         db.execSQL(CREATE_TABLE_INGREDIENTS);
         db.execSQL(CREATE_TABLE_RECIPE_INGREDIENTS);
-
     }
 
     @Override
@@ -102,24 +106,11 @@ public class MyDBHandler extends SQLiteOpenHelper {
     // delete a recipe
     public void deleteRecipe(int recipeId) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_RECIPES, RECIPE_ID + " = ?", new String[] {String.valueOf(recipeId)});
+        db.delete(TABLE_RECIPES, RECIPE_ID + " = ?", new String[]{String.valueOf(recipeId)});
+        // delete
+        // delete
 
     }
-    /*
-
-    public void findIngredients(int recipeId){
-        SQLiteDatabase db = getWritableDatabase();
-        int cPos;  // cursor position
-        Cursor c = db.rawQuery("SELECT INGREDIENT_NAME, RI_INGREDIENT_QUANTITY, RI_INGREDIENT_UNIT FROM "
-        + TABLE_INGREDIENTS + "INNER JOIN " + TABLE_RECIPE_INGREDIENTS + "ON " +
-        TABLE_INGREDIENTS)
-
-        String fetchIngrId = "SELECT RI_INGREDIENT_ID FROM " + TABLE_RECIPE_INGREDIENTS + "WHERE " + RI_RECIPE_ID + "=" + recipeId;
-        String fetchIngr = "SELECT INGREDIENT_NAME FROM " + TABLE_INGREDIENTS + "WHERE " + INGREDIENT_ID + "=" ;
-
-
-    }
-*/
 
     public List<Recipe> getRecipes() {
 
@@ -171,16 +162,75 @@ public class MyDBHandler extends SQLiteOpenHelper {
     // create recipe-ingredients relation with quantity and unit
     public void createRecipesIngredients(RecipeIngredients recipeIngredient) {
         ContentValues values = new ContentValues();
-        values.put(RI_RECIPE_ID, recipeIngredient.getRecipe_id());
-        values.put(RI_INGREDIENT_ID, recipeIngredient.getIngredient_id());
-        values.put(RI_INGREDIENT_QUANTITY, recipeIngredient.getQuantity());
-        values.put(RI_INGREDIENT_UNIT, recipeIngredient.getUnit());
+        values.put(RECIPE_ID, recipeIngredient.getRecipe_id());
+        values.put(INGREDIENT_ID, recipeIngredient.getIngredient_id());
+        values.put(INGREDIENT_QUANTITY, recipeIngredient.getQuantity());
+        values.put(INGREDIENT_UNIT, recipeIngredient.getUnit());
         SQLiteDatabase db = getWritableDatabase();
         // new row to table
         db.insert(TABLE_RECIPE_INGREDIENTS, null, values);
         db.close();
     }
 
+    // get ingredients for given recipe id
+
+    public String[][] getRecipeIngredients(int id) {
+        Log.d("int2", "value: " + id);
+
+        String GET_ALL_INGREDIENTS = "SELECT " + INGREDIENT_NAME + "," + INGREDIENT_QUANTITY + "," +
+                INGREDIENT_UNIT +
+                " FROM " + TABLE_INGREDIENTS +
+                " INNER JOIN " + TABLE_RECIPE_INGREDIENTS +
+                " ON " + TABLE_RECIPE_INGREDIENTS + "." + INGREDIENT_ID + "=" + TABLE_INGREDIENTS + "." + INGREDIENT_ID +
+                " WHERE " + TABLE_RECIPE_INGREDIENTS + "." + RECIPE_ID + "=" + id;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(GET_ALL_INGREDIENTS, null);
+        int x = c.getCount();
+        String[][] ingredientsArray = new String[x][3];
+
+
+        // put each row into 2d array
+        int i = 0;
+        c.moveToFirst();
+        while (c.moveToNext()) {
+            String name = c.getString(c.getColumnIndex(INGREDIENT_NAME));
+            String quantity = c.getString(c.getColumnIndex(INGREDIENT_QUANTITY));
+            String unit = c.getString(c.getColumnIndex(INGREDIENT_UNIT));
+            ingredientsArray[i][0] = name;
+            ingredientsArray[i][1] = quantity;
+            ingredientsArray[i][2] = unit;
+            Log.i("SENDSERVER", "Record Added");
+            i++;
+        }
+        return ingredientsArray;
+    }
+
+    public int getLastRecipeId() {
+        int lastRecipeId = 0;
+        String query = "SELECT " + RECIPE_ID + " FROM " + TABLE_RECIPES + " ORDER BY " +
+                RECIPE_ID + " DESC limit 1";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(query, null);
+        if (c != null && c.moveToFirst()) {
+            lastRecipeId = c.getInt(0);
+            return lastRecipeId;
+        }
+        return lastRecipeId;
+    }
+
+    public int getLastIngredientId() {
+        int lastIngredientId = 0;
+        String query = "SELECT " + INGREDIENT_ID + " FROM " + TABLE_INGREDIENTS + " ORDER BY " +
+                INGREDIENT_ID + " DESC limit 1";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(query, null);
+        if (c != null && c.moveToFirst()) {
+            lastIngredientId = c.getInt(0);
+            return lastIngredientId;
+        }
+        return lastIngredientId;
+    }
 }
 
 

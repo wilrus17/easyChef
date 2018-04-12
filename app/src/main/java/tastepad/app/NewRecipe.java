@@ -137,8 +137,12 @@ public class NewRecipe extends AppCompatActivity {
                         db.createIngredient(ingredient);
 
                         // recipe id, ingredient id, quantity, unit to Recipe_Ingredients Link table
-                        int recipeId = recipe.get_id();
-                        int ingredientId = ingredient.get_id();
+                        db.getReadableDatabase();
+                        int recipeId = db.getLastRecipeId();
+                        int ingredientId = db.getLastIngredientId();
+
+                        Log.d("ids", "value: " + recipeId);
+                        Log.d("ids", "value: " + ingredientId);
 
                         RecipeIngredients recipeIngredients = new RecipeIngredients();
                         recipeIngredients.setIngredient_id(ingredientId);
