@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -46,6 +48,8 @@ public class ShoppingList extends AppCompatActivity {
 
         editTextInsert = findViewById(R.id.shoppingItemText);
         editTextInsert.addTextChangedListener(addItemWater);
+
+        /*
         buttonInsert =  findViewById(R.id.shoppingItemAdd);
 
 
@@ -60,17 +64,16 @@ public class ShoppingList extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), ingredient + " added", Toast.LENGTH_SHORT).show();
                 saveData();
             }
-        });
+        }); */
 
 
-        // toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
-        // add toolbar back arrow
-        if (getSupportActionBar() != null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
+
+
+
+
 
     }
 
@@ -148,8 +151,6 @@ public class ShoppingList extends AppCompatActivity {
         onBackPressed();
         return true;
     }
-
-
 
 
 }

@@ -35,7 +35,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private Context mContext;
     private ArrayList<Recipe> listRecipe;
-    private ArrayList<Recipe> mFilteredList;
+    private ArrayList<Recipe> filteredList;
     private MyDBHandler db;
     private ActionMode mActionmode;
     public int id;
@@ -53,7 +53,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         this.mContext = mContext;
         this.listRecipe = listRecipe;
-        this.mFilteredList = listRecipe;
+        this.filteredList = listRecipe;
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -100,6 +100,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 int id = listRecipe.get(position).get_id();
                 Log.d("int", "value: " + id);
 
+                if (mActionmode != null)  {
+                    mActionmode.finish();
+
+                }
+
                 MyDBHandler db = new MyDBHandler(mContext);
 
                 String [][] ingredients = db.getRecipeIngredients(id);
@@ -125,9 +130,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 id = listRecipe.get(position).get_id();
                 setId(id);
 
-                if (mActionmode != null)  {
-                    return false;
-                }
                 mActionmode = ((AppCompatActivity) v.getContext()).startSupportActionMode(mActionModeCallback);
                 return true;
             }

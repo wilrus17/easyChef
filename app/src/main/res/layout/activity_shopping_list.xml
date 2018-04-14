@@ -1,45 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:orientation="vertical">
-
-<include
-    android:id="@+id/toolbar"
-    layout="@layout/toolbar"
-    />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/shoppingItemText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="@string/item_editText_hint"/>
-
-        <Button
-            android:id="@+id/shoppingItemAdd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:enabled="false"
-            android:text="@string/add_button_text"/>
-    </LinearLayout>
-
-<android.support.v7.widget.RecyclerView
-    android:id="@+id/shopping_listView"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="4dp"
-    android:scrollbars="vertical"
-    android:background="@android:color/darker_gray"
-    android:layout_marginTop="5dp"/>
+    android:orientation="vertical"  >
 
+    <include
+        android:id="@+id/toolbar2"
+        layout="@layout/toolbar2"
+        />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/shopping_listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:background="@android:color/darker_gray"
+        android:padding="4dp"
+        android:scrollbars="vertical" />
 
 
 </LinearLayout>

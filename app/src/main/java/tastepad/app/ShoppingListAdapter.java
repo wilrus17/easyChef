@@ -8,9 +8,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+
 public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapter.ShoppingViewHolder> {
 
     private ArrayList<ShoppingItem> mShoppingList;
+
+
 
     public static class ShoppingViewHolder extends RecyclerView.ViewHolder {
         public TextView mTextView1;
@@ -38,8 +41,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
     public void onBindViewHolder(ShoppingViewHolder holder, int position) {
         ShoppingItem currentItem = mShoppingList.get(position);
 
-        holder.mTextView1.setText(currentItem.getText1());
-
+        holder.mTextView1.setText(currentItem.getItemName());
     }
 
     @Override

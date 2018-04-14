@@ -12,12 +12,18 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.SearchView;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.EditText;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MyRecipes extends AppCompatActivity {
@@ -27,7 +33,7 @@ public class MyRecipes extends AppCompatActivity {
     private RecyclerViewAdapter recyclerViewAdapter;
     private ArrayList<Recipe> listRecipe;
     private RecyclerView recyclerViewRecipe;
-    SearchView searchBox;
+
     private ArrayList<Recipe> filteredList;
     MyDBHandler db = new MyDBHandler(this);
 
@@ -48,6 +54,30 @@ public class MyRecipes extends AppCompatActivity {
 
         initialiseViews();
         initialiseObjects();
+
+
+        final EditText searchbar = (EditText) findViewById(R.id.searchbar);
+
+        searchbar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                isEmpty(searchbar);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filter(s.toString());
+
+            }
+        });
+
+
+
     }
 
 
@@ -105,7 +135,7 @@ public class MyRecipes extends AppCompatActivity {
         switch (item.getItemId()) {
             // click + to create new recipe
             case R.id.plus_button:
-                Intent i = new Intent(this,NewRecipe.class);
+                Intent i = new Intent(this, NewRecipe.class);
                 this.startActivity(i);
                 return true;
             default:
@@ -114,15 +144,35 @@ public class MyRecipes extends AppCompatActivity {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         // refresh with any new recipes
         getDataFromSQLite();
     }
 
+    public boolean isEmpty(EditText etText) {
+        if (etText.getText().toString().trim().length() > 0) {
+            etText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.clear_icon, 0);
+            return false;
+        }
+        etText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.search_icon, 0);
+        return true;
+
+    }
 
 
+    private void filter(String text) {
+        ArrayList<Ingredient> filteredList = new ArrayList<>();
 
+        for (Recipe recipe : listRecipe) {
+            if (
 
+            }
+
+        }
+    }
 
 }
+
+
+

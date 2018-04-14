@@ -8,12 +8,12 @@ public class ShoppingItem {
     private String mText1;
 
 
-    public ShoppingItem(String text1) {
-        mText1 = text1;
+    public ShoppingItem(String itemName) {
+        mText1 = itemName;
 
     }
 
-    public String getText1() {
+    public String getItemName() {
         return mText1;
     }
 
