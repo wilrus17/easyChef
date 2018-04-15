@@ -36,9 +36,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private Context mContext;
     private ArrayList<Recipe> listRecipe;
     private ArrayList<Recipe> filteredList;
+
     private MyDBHandler db;
     private ActionMode mActionmode;
     public int id;
+    MyRecipes filter;
 
     public int getId() {
         return id;
@@ -53,8 +55,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         this.mContext = mContext;
         this.listRecipe = listRecipe;
-        this.filteredList = listRecipe;
-    }
+
+            }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -183,6 +185,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public int getItemCount() {
         return listRecipe.size();
     }
+
+    public void setList(ArrayList<Recipe> list) {
+        this.filteredList = list;
+    }
+
 
 
 }

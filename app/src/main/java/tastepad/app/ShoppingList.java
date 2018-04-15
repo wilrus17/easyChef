@@ -1,5 +1,6 @@
 package tastepad.app;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,14 +9,19 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -32,10 +38,10 @@ public class ShoppingList extends AppCompatActivity {
     private ArrayList<ShoppingItem> mShoppingList;
     private Button buttonInsert;
     private EditText editTextInsert;
+    private Context mContext;
 
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String TEXT = "text";
-
 
 
     @Override
@@ -46,40 +52,42 @@ public class ShoppingList extends AppCompatActivity {
         loadData();
         buildRecyclerView();
 
-        editTextInsert = findViewById(R.id.shoppingItemText);
-        editTextInsert.addTextChangedListener(addItemWater);
+        editTextInsert = (EditText) findViewById(R.id.newItem);
 
-        /*
-        buttonInsert =  findViewById(R.id.shoppingItemAdd);
-
-
-
-
-        buttonInsert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String ingredient = editTextInsert.getText().toString();
-                insertItem(ingredient);
-                editTextInsert.setText("");
-                Toast.makeText(getApplicationContext(), ingredient + " added", Toast.LENGTH_SHORT).show();
-                saveData();
-            }
-        }); */
-
-
-
+        // set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Shopping List");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
-
-
+        // add item on enter key press
+        editTextInsert.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                        String ingredient = editTextInsert.getText().toString();
+                        insertItem(ingredient);
+                        Toast.makeText(getApplicationContext(), ingredient + " added", Toast.LENGTH_SHORT).show();
+                        saveData();
+                        editTextInsert.setText("");
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
 
     }
 
     public void insertItem(String ingredient) {
         mShoppingList.add(new ShoppingItem(ingredient));
         mAdapter.notifyDataSetChanged();
+
     }
 
 
@@ -92,7 +100,7 @@ public class ShoppingList extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.shopping_listView);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
-        mAdapter= new ShoppingListAdapter(mShoppingList);
+        mAdapter = new ShoppingListAdapter(mShoppingList);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
@@ -114,7 +122,8 @@ public class ShoppingList extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("shopping list", null);
-        Type type = new TypeToken<ArrayList<ShoppingItem>>() {}.getType();
+        Type type = new TypeToken<ArrayList<ShoppingItem>>() {
+        }.getType();
         mShoppingList = gson.fromJson(json, type);
 
         if (mShoppingList == null) {
@@ -123,37 +132,15 @@ public class ShoppingList extends AppCompatActivity {
     }
 
 
-    // disable button if no input text
-    private TextWatcher addItemWater = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            String itemInput = editTextInsert.getText().toString().trim();
-
-            buttonInsert.setEnabled(!itemInput.isEmpty());
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-    };
-
-
-
     // toolbar back arrow click
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
     }
-
-
 }
+
+
 
 
 

@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.Cursor;
 import android.content.Context;
 import android.content.ContentValues;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.sql.DatabaseMetaData;
@@ -12,6 +13,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Will on 26/03/2018.
@@ -19,7 +21,7 @@ import java.util.List;
 
 public class MyDBHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "RecipesDB.db";
-    private static final int DATABASE_VERISON = 2;
+    private static final int DATABASE_VERISON = 3;
     public int id;
     Context mContext;
     MyDBHandler db;
@@ -41,6 +43,10 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public static final String INGREDIENT_QUANTITY = "ingredient_quantity";
     public static final String INGREDIENT_UNIT = "ingredient_unit";
 
+    public static final String TABLE_SEARCH = "Search";
+    public static final String INGREDIENT_SEARCH = "Ingredient_search";
+
+
     // create table statements
     final String CREATE_TABLE_RECIPES = "CREATE TABLE IF NOT EXISTS " +
             TABLE_RECIPES + "(" +
@@ -52,7 +58,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     final String CREATE_TABLE_INGREDIENTS = "CREATE TABLE IF NOT EXISTS " +
             TABLE_INGREDIENTS + "(" +
             INGREDIENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            INGREDIENT_NAME + " TEXT NOT NULL UNIQUE " +
+            INGREDIENT_NAME + " TEXT NOT NULL " +
             ")";
 
     final String CREATE_TABLE_RECIPE_INGREDIENTS = "CREATE TABLE IF NOT EXISTS " +
@@ -68,7 +74,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
 
     public MyDBHandler(Context context) {
-        super(context, DATABASE_NAME, null, 2);
+        super(context, DATABASE_NAME, null, 3);
     }
 
     @Override
@@ -78,6 +84,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_RECIPES);
         db.execSQL(CREATE_TABLE_INGREDIENTS);
         db.execSQL(CREATE_TABLE_RECIPE_INGREDIENTS);
+
     }
 
     @Override
@@ -101,7 +108,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.insert(TABLE_RECIPES, null, values);
         db.close();
     }
-
 
     // delete a recipe
     public void deleteRecipe(int recipeId) {
@@ -154,7 +160,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(INGREDIENT_NAME, ingredient.getIngredientname());
         SQLiteDatabase db = getWritableDatabase();
-        db.insertWithOnConflict(TABLE_INGREDIENTS, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        db.insert(TABLE_INGREDIENTS, null, values);
         db.close();
     }
 
@@ -199,8 +205,10 @@ public class MyDBHandler extends SQLiteOpenHelper {
             Log.i("ingredients", Arrays.deepToString(ingredientsArray));
             i++;
         }
+        c.close();
         Log.i("ingredientsRe", Arrays.deepToString(ingredientsArray));
         return ingredientsArray;
+
     }
 
     // recipeId that was just added
@@ -214,6 +222,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
             lastRecipeId = c.getInt(0);
             return lastRecipeId;
         }
+        c.close();
         return lastRecipeId;
     }
 
@@ -229,6 +238,39 @@ public class MyDBHandler extends SQLiteOpenHelper {
             return lastIngredientId;
         }
         return lastIngredientId;
+    }
+
+    // return list of recipes that use inputList ingredients
+    public ArrayList<Integer> getFilteredRecipes(List<String> inputList) {
+
+        String formatted = TextUtils.join("', '", inputList);
+        int listSize = inputList.size();
+
+        String GET_FILTERED_RECIPES =
+                "SELECT " + RECIPE_ID +
+                        " FROM " + TABLE_RECIPE_INGREDIENTS +
+                        " INNER JOIN " + TABLE_INGREDIENTS +
+                        " ON " + TABLE_RECIPE_INGREDIENTS + "." + INGREDIENT_ID + "=" + TABLE_INGREDIENTS + "." + INGREDIENT_ID +
+                        " WHERE " + TABLE_INGREDIENTS + "." + INGREDIENT_NAME + " IN " + "('" + formatted + "')" +
+                        " GROUP BY " + RECIPE_ID +
+                        " HAVING COUNT(DISTINCT " + TABLE_INGREDIENTS + "." + INGREDIENT_NAME+ ")" + ">=" + listSize;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(GET_FILTERED_RECIPES, null);
+        int x = c.getCount();
+        ArrayList<Integer> list = new ArrayList<Integer>();
+
+        // put each row into list
+        int i = 0;
+        while (c.moveToNext()) {
+            int recipeId = c.getInt(c.getColumnIndex(RECIPE_ID));
+            list.add(recipeId);
+            i++;
+
+            Log.i("ingredientsRe", list.toString());
+        }
+        c.close();
+        return list;
     }
 
 

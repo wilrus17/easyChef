@@ -150,7 +150,10 @@ public class NewRecipe extends AppCompatActivity {
                         recipeIngredients.setQuantity(ingredientQuantity);
                         recipeIngredients.setUnit(ingredientUnit);
                         db.createRecipesIngredients(recipeIngredients);
-
+                        Log.d("created id", "value: " + ingredientId);
+                        Log.d("created", "value: " + ingredientId);
+                        Log.d("ids", "value: " + ingredientId);
+                        Log.d("ids", "value: " + ingredientId);
                     }
 
                     // recipe creation confirmation

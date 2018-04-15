@@ -32,9 +32,10 @@ public class MyRecipes extends AppCompatActivity {
     Context context = MyRecipes.this;
     private RecyclerViewAdapter recyclerViewAdapter;
     private ArrayList<Recipe> listRecipe;
+
     private RecyclerView recyclerViewRecipe;
 
-    private ArrayList<Recipe> filteredList;
+
     MyDBHandler db = new MyDBHandler(this);
 
     @Override
@@ -72,12 +73,8 @@ public class MyRecipes extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 filter(s.toString());
-
             }
         });
-
-
-
     }
 
 
@@ -96,6 +93,8 @@ public class MyRecipes extends AppCompatActivity {
 
         getDataFromSQLite();
     }
+
+
 
     private void getDataFromSQLite() {
         new AsyncTask<Void, Void, Void>() {
@@ -161,16 +160,46 @@ public class MyRecipes extends AppCompatActivity {
     }
 
 
-    private void filter(String text) {
-        ArrayList<Ingredient> filteredList = new ArrayList<>();
+    private boolean filter(String text){
+        text = text.toLowerCase();
+        String text2 = text.replaceAll("^[,\\s]+", "");
 
-        for (Recipe recipe : listRecipe) {
-            if (
-
-            }
+        // early return
+        if (text2.isEmpty()) {
+            return true;
 
         }
+
+        // ingredients as list
+        List<String> inputList = Arrays.asList((text2.split("[,\\s]+")));
+
+        // filter recipe ids
+        ArrayList<Integer> filteredRecipeId = db.getFilteredRecipes(inputList);
+        ArrayList<Recipe> newList = new ArrayList<>();
+        System.out.println("Arraylist contains: " + filteredRecipeId.toString());
+
+        for (Recipe recipe : listRecipe) {
+            if (filteredRecipeId.contains(recipe.get_id())){
+                newList.add(recipe);
+                break;
+            }
+        }
+        System.out.println("Arraylistfiltered contains: " + newList.toString());
+
+        recyclerViewAdapter = new RecyclerViewAdapter(newList, this);
+        recyclerViewRecipe.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerViewRecipe.setItemAnimator(new DefaultItemAnimator());
+        recyclerViewRecipe.setHasFixedSize(true);
+        recyclerViewRecipe.setAdapter(recyclerViewAdapter);
+        recyclerViewAdapter.notifyDataSetChanged();
+
+        return true;
+
+
+
+
     }
+
 
 }
 
