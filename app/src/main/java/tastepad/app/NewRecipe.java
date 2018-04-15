@@ -131,15 +131,22 @@ public class NewRecipe extends AppCompatActivity {
                         String ingredientQuantity = ((EditText) group.getChildAt(1)).getText().toString();
                         String ingredientUnit = ((Spinner) group.getChildAt(2)).getSelectedItem().toString();
 
-                        // ingredient to ingredients table
-                        Ingredient ingredient = new Ingredient();
-                        ingredient.setIngredientname(ingredientName);
-                        db.createIngredient(ingredient);
+                        db.getReadableDatabase();
+
+                        // if ingredientName exists in ingredient table, get ID for that ingredient name
+                        // else, create new ingredient and get last id that was added
+                        int ingredientId;
+                        if (db.checkIngredientXist(ingredientName) != -1) {
+                            ingredientId = db.checkIngredientXist(ingredientName);
+                        } else {
+                            Ingredient ingredient = new Ingredient();
+                            ingredient.setIngredientname(ingredientName);
+                            db.createIngredient(ingredient);
+                            ingredientId = db.getLastIngredientId();
+                        }
 
                         // recipe id, ingredient id, quantity, unit to Recipe_Ingredients Link table
-                        db.getReadableDatabase();
                         int recipeId = db.getLastRecipeId();
-                        int ingredientId = db.getLastIngredientId();
 
                         Log.d("ids", "value: " + recipeId);
                         Log.d("ids", "value: " + ingredientId);
@@ -169,16 +176,11 @@ public class NewRecipe extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
     }
-
-
-
-
 
 
 }

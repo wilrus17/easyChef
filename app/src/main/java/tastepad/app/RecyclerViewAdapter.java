@@ -186,8 +186,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return listRecipe.size();
     }
 
-    public void setList(ArrayList<Recipe> list) {
-        this.filteredList = list;
+        public void filterList(ArrayList<Recipe> filteredList)  {
+        listRecipe = filteredList;
+        notifyDataSetChanged();
     }
 
 

@@ -177,6 +177,22 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    // get ingredient Id if name exists, otherwise
+    public int checkIngredientXist(String ingredientName) {
+
+        String getIngredientId = "SELECT " + INGREDIENT_ID +
+                " FROM " + TABLE_INGREDIENTS +
+                " WHERE " + INGREDIENT_NAME + " IN " + "('" + ingredientName + "')";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(getIngredientId, null);
+        if (c != null && c.moveToFirst()) {
+            int ingredientId = c.getInt(0);
+            return ingredientId;
+        }
+        return -1;
+    }
+
     // get ingredients for given recipe id
     public String[][] getRecipeIngredients(int id) {
         Log.d("int2", "value: " + id);
@@ -253,7 +269,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
                         " ON " + TABLE_RECIPE_INGREDIENTS + "." + INGREDIENT_ID + "=" + TABLE_INGREDIENTS + "." + INGREDIENT_ID +
                         " WHERE " + TABLE_INGREDIENTS + "." + INGREDIENT_NAME + " IN " + "('" + formatted + "')" +
                         " GROUP BY " + RECIPE_ID +
-                        " HAVING COUNT(DISTINCT " + TABLE_INGREDIENTS + "." + INGREDIENT_NAME+ ")" + ">=" + listSize;
+                        " HAVING COUNT(DISTINCT " + TABLE_INGREDIENTS + "." + INGREDIENT_NAME + ")" + ">=" + listSize;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(GET_FILTERED_RECIPES, null);

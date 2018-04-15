@@ -14,12 +14,17 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.SearchView;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
@@ -75,6 +80,10 @@ public class MyRecipes extends AppCompatActivity {
                 filter(s.toString());
             }
         });
+
+
+
+
     }
 
 
@@ -93,7 +102,6 @@ public class MyRecipes extends AppCompatActivity {
 
         getDataFromSQLite();
     }
-
 
 
     private void getDataFromSQLite() {
@@ -160,14 +168,14 @@ public class MyRecipes extends AppCompatActivity {
     }
 
 
-    private boolean filter(String text){
+    private boolean filter(String text) {
         text = text.toLowerCase();
         String text2 = text.replaceAll("^[,\\s]+", "");
 
         // early return
         if (text2.isEmpty()) {
+            recyclerViewAdapter.filterList(listRecipe);
             return true;
-
         }
 
         // ingredients as list
@@ -178,26 +186,16 @@ public class MyRecipes extends AppCompatActivity {
         ArrayList<Recipe> newList = new ArrayList<>();
         System.out.println("Arraylist contains: " + filteredRecipeId.toString());
 
+        Log.i("filtered recipes: ", db.getFilteredRecipes(inputList).toString());
         for (Recipe recipe : listRecipe) {
-            if (filteredRecipeId.contains(recipe.get_id())){
+            if (filteredRecipeId.contains(recipe.get_id())) {
                 newList.add(recipe);
-                break;
+
             }
         }
-        System.out.println("Arraylistfiltered contains: " + newList.toString());
-
-        recyclerViewAdapter = new RecyclerViewAdapter(newList, this);
-        recyclerViewRecipe.setLayoutManager(new GridLayoutManager(this, 2));
-        recyclerViewRecipe.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewRecipe.setHasFixedSize(true);
-        recyclerViewRecipe.setAdapter(recyclerViewAdapter);
-        recyclerViewAdapter.notifyDataSetChanged();
-
+        Log.i("filtered added recipes: ", newList.toString());
+        recyclerViewAdapter.filterList(newList);
         return true;
-
-
-
-
     }
 
 
