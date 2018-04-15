@@ -6,7 +6,7 @@
         android:title="addRecipe"
         android:id="@+id/plus_button"
         android:visible="true"
-        android:icon="@drawable/addBox"
+        android:icon="@drawable/addbox"
         app:showAsAction="always">
     </item>
 </menu>
