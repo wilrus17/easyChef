@@ -6,42 +6,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#123456"
+    android:background="#424242"
     android:weightSum="11"
     tools:context="tastepad.app.MainActivity">
 
     <RelativeLayout
-        android:layout_weight="2"
         android:layout_width="match_parent"
-        android:layout_height="0dp">
+        android:layout_height="50dp"
+        android:layout_marginTop="100dp"
+        android:layout_weight="2">
 
         <TextView
-            android:text="@string/appName"
-            android:textSize="34sp"
-            android:textColor="@android:color/white"
-            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="@string/appName"
+            android:textColor="@android:color/white"
+            android:textSize="34sp" />
 
     </RelativeLayout>
 
-    <GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="7"
-        android:alignmentMode="alignMargins"
-        android:columnCount="2"
-        android:columnOrderPreserved="false"
-        android:padding="14dp"
-        android:rowCount="2">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <!--Row 1 -->
         <!--Column 1-->
 
         <android.support.v7.widget.CardView
             android:id="@+id/fridge_card"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
             android:layout_columnWeight="1"
             android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
@@ -52,8 +49,8 @@
             app:cardElevation="8dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="16dp"
                 android:orientation="vertical">
@@ -80,9 +77,9 @@
         <!--Column 2-->
 
         <android.support.v7.widget.CardView
-            android:id="@+id/recipes_card"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:id="@+id/shopping_card"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
             android:layout_columnWeight="1"
             android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
@@ -100,8 +97,47 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="match_parent"
+                    android:layout_width="68dp"
+                    android:layout_height="63dp"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/me_time" />
+
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="Shopping List"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/recipes_card"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_columnWeight="1"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_rowWeight="1"
+            android:background="#ffffff"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="16dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:layout_gravity="center_horizontal"
                     android:contentDescription="@string/TODO"
                     android:src="@drawable/me_time" />
@@ -119,92 +155,8 @@
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
-        <!--Row 2 -->
-        <!--Column 1-->
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/shopping_card"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_columnWeight="1"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_rowWeight="1"
-            android:background="#ffffff"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="8dp">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="16dp"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:src="@drawable/me_time" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Shopping List"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-
-        <!--Row 2 -->
-        <!--Column 2-->
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/explore_card"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_columnWeight="1"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_rowWeight="1"
-            android:background="#ffffff"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="8dp">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="16dp"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:src="@drawable/me_time" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Explore test1"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-
-
-    </GridLayout>
+    </LinearLayout>
 
 
 

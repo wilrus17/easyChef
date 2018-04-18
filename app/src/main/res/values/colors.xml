@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#125688</color>
-    <color name="colorPrimaryDark">#125688</color>
-    <color name="tabtextcolor">#fff</color>
+    <color name="colorPrimary">#689f38</color>
+    <color name="colorPrimaryDark">#387002</color>
+    <color name="tabtextcolor">#424242</color>
     <color name="windowBackground">#FFFFFF</color>
     <color name="navigationBarColor">#000000</color>
-    <color name="colorAccent">#c8e8ff</color>
+    <color name="colorAccent">#424242</color>
     <color name="tabindicatorcolor">#2d2d2d</color>
-    <color name="borderColor">#0288D1</color>
+    <color name="borderColor">#424242</color>
+    <color name="textColor">#424242</color>
     <!--Indigo 500-->
-    <color name="primary_500">#3F51B5</color>
+    <color name="primary_500">#66BB6A</color>
     <!--Indigo 700-->
-    <color name="primary_700">#303F9F</color>
+    <color name="primary_700">#2E7D32</color>
     <color name="white">#FFFFFF</color>
     <color name="yellow">#FFFF00</color>
     <color name="fuchsia">#FF00FF</color>

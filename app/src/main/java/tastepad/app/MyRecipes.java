@@ -81,9 +81,6 @@ public class MyRecipes extends AppCompatActivity {
             }
         });
 
-
-
-
     }
 
 
