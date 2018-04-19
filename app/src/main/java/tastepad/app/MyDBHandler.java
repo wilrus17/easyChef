@@ -152,7 +152,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
         // return recipe list
         return recipeList;
-
     }
 
     // add ingredient
@@ -178,7 +177,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     }
 
     // get ingredient Id if name exists, otherwise
-    public int checkIngredientXist(String ingredientName) {
+    public int checkIngredientExist(String ingredientName) {
 
         String getIngredientId = "SELECT " + INGREDIENT_ID +
                 " FROM " + TABLE_INGREDIENTS +

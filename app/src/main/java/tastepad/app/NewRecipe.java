@@ -78,6 +78,7 @@ public class NewRecipe extends AppCompatActivity {
             public void onClick(View v) {
                 textIn.setText("");
                 quantityIn.setText("");
+                unitIn.setSelection(0);
 
             }
         });
@@ -128,7 +129,15 @@ public class NewRecipe extends AppCompatActivity {
                         ViewGroup group = (ViewGroup) child;
 
                         String ingredientName = ((EditText) group.getChildAt(0)).getText().toString();
-                        String ingredientQuantity = ((EditText) group.getChildAt(1)).getText().toString();
+                        String quantity = ((EditText) group.getChildAt(1)).getText().toString();
+                        String ingredientQuantity;
+
+                        // replace null values with -
+                        if (quantity.length() != 0) {
+                            ingredientQuantity = quantity;
+                        } else ingredientQuantity = "-";
+
+
                         String ingredientUnit = ((Spinner) group.getChildAt(2)).getSelectedItem().toString();
 
                         db.getReadableDatabase();
@@ -136,8 +145,8 @@ public class NewRecipe extends AppCompatActivity {
                         // if ingredientName exists in ingredient table, get ID for that ingredient name
                         // else, create new ingredient and get last id that was added
                         int ingredientId;
-                        if (db.checkIngredientXist(ingredientName) != -1) {
-                            ingredientId = db.checkIngredientXist(ingredientName);
+                        if (db.checkIngredientExist(ingredientName) != -1) {
+                            ingredientId = db.checkIngredientExist(ingredientName);
                         } else {
                             Ingredient ingredient = new Ingredient();
                             ingredient.setIngredientname(ingredientName);

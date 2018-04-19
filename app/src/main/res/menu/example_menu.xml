@@ -4,12 +4,9 @@
     <item
         android:id="@+id/option_1"
         android:title="Option 1"
-        android:icon="@drawable/delete_icon_white" />
+        android:icon="@drawable/scissors"/>
 
-    <item
-        android:id="@+id/option_2"
-        android:title="Option 1"
-        android:icon="@drawable/delete_icon_white" />
+
 
 
 </menu>

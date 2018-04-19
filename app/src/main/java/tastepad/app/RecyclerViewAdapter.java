@@ -55,8 +55,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         this.mContext = mContext;
         this.listRecipe = listRecipe;
-
-            }
+    }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -104,7 +103,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                 if (mActionmode != null)  {
                     mActionmode.finish();
-
                 }
 
                 MyDBHandler db = new MyDBHandler(mContext);
@@ -166,10 +164,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     mContext.startActivity(intent);
                     return true;
 
-                // edit selected recipe
-                case R.id.option_2:
-                    mode.finish();
-                    return true;
+
                 default:
                     return false;
             }
