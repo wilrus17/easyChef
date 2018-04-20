@@ -29,7 +29,7 @@
 
             <EditText
                 android:textColor="@color/textColor"
-                android:imeOptions="actionDone"
+                android:imeOptions="actionSend"
                 android:singleLine="true"
                 android:id="@+id/newItem"
                 android:layout_width="389dp"

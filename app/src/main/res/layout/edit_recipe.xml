@@ -71,7 +71,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.6"
                         android:hint="New Ingredient"
-                        android:inputType="text" />
+                        android:inputType="text"
+                        android:imeOptions="actionNext"/>
 
                     <EditText
                         android:id="@+id/edit_quantity"
@@ -79,7 +80,8 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0.9"
                         android:hint="Quantity"
-                        android:inputType="numberDecimal|numberSigned" />
+                        android:inputType="numberDecimal|numberSigned"
+                        android:imeOptions="actionNext"/>
 
                     <Spinner
                         android:id="@+id/edit_unit"

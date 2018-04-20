@@ -18,6 +18,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,16 +30,17 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-public class ShoppingList extends AppCompatActivity {
+public class ShoppingList extends AppCompatActivity  {
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    public RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private EditText mItemEdit;
     private Button mAddButton;
-    private ArrayList<ShoppingItem> mShoppingList;
+    public static ArrayList<ShoppingItem> mShoppingList;
     private Button buttonInsert;
     private EditText editTextInsert;
     private Context mContext;
+    static ArrayList<String> listItems = new ArrayList<String>();
 
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String TEXT = "text";
@@ -64,6 +66,11 @@ public class ShoppingList extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
+        for(String s : listItems) {
+            mShoppingList.add(new ShoppingItem(s));
+            mAdapter.notifyDataSetChanged();
+        }
+
         // add item on enter key press
         editTextInsert.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -82,14 +89,14 @@ public class ShoppingList extends AppCompatActivity {
             }
         });
 
+
+
     }
 
     public void insertItem(String ingredient) {
         mShoppingList.add(new ShoppingItem(ingredient));
         mAdapter.notifyDataSetChanged();
-
     }
-
 
     public void createShoppingList() {
         mShoppingList = new ArrayList<>();
@@ -106,8 +113,7 @@ public class ShoppingList extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
     }
 
-
-    // save shared preferences
+    // save to shared preferences
     public void saveData() {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -117,7 +123,7 @@ public class ShoppingList extends AppCompatActivity {
         editor.apply();
     }
 
-    // load shared preferences
+    // load from shared preferences
     public void loadData() {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
@@ -130,7 +136,6 @@ public class ShoppingList extends AppCompatActivity {
             mShoppingList = new ArrayList<>();
         }
     }
-
 
     // toolbar back arrow click
     @Override

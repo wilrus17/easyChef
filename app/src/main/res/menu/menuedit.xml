@@ -3,10 +3,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:title="addToShoppingList"
+        android:id="@+id/addShopping"
+        android:visible="true"
+        android:icon="@drawable/addshoppingcart"
+        app:showAsAction="always">
+    </item>
+
+    <item
         android:title="editRecipe"
         android:id="@+id/edit"
         android:visible="true"
         android:icon="@drawable/delete_icon_white"
         app:showAsAction="always">
     </item>
+
 </menu>

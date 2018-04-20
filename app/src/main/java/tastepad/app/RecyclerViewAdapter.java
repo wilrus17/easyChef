@@ -163,8 +163,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     Intent intent = new Intent(mContext, MyRecipes.class);
                     mContext.startActivity(intent);
                     return true;
-
-
                 default:
                     return false;
             }

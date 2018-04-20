@@ -1,10 +1,12 @@
 package tastepad.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.Arrays;
 
@@ -28,7 +31,6 @@ public class EditRecipe extends AppCompatActivity {
     EditText editTitle;
     MyDBHandler db;
     EditText editInstructions;
-
 
 
     @Override
@@ -51,7 +53,7 @@ public class EditRecipe extends AppCompatActivity {
         String[][] recipeIngredients = (String[][]) extras.getSerializable("Ingredients");
         String recipeInstructions = (String) extras.getString("Instructions");
         String recipeTitle = (String) extras.getString("Title");
-        int recipeId = (Integer) extras.getInt("RecipeId");
+        final int recipeId = (Integer) extras.getInt("RecipeId");
 
         // defining recipe title and instruction views
         editTitle = (EditText) findViewById(R.id.edit_title);
@@ -77,7 +79,7 @@ public class EditRecipe extends AppCompatActivity {
 
         ViewGroup group = (ViewGroup) container;
 
-        // add current ingredients in rows
+        // add pre-edit ingredients in rows
         for (int i = 1; i < recipeIngredients.length; i++) {
             String ingredient = recipeIngredients[i][0];
             String quantity = recipeIngredients[i][1];
@@ -151,20 +153,84 @@ public class EditRecipe extends AppCompatActivity {
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v2) {
-                // get id
-                // datebase method - delete int Id input
+                db.deleteRecipe(recipeId);
 
-                //copy new recipe code
+                // error if no recipe title input
+                if (TextUtils.isEmpty(editTitle.getText().toString())) {
+                    editTitle.setError("Your recipe must have a title.");
+                    return;
+
+                } else {
+
+                    // save recipe title and instructions to recipes_table
+                    Recipe recipe = new Recipe();
+                    recipe.setRecipename(editTitle.getText().toString());
+                    recipe.setInstructions(editInstructions.getText().toString());
+                    db.createRecipe(recipe);
+
+                    // identify each ingredient, quantity, unit
+                    ViewGroup viewGroup = (ViewGroup) container;
+                    for (int j = 0; j < viewGroup.getChildCount(); j++) {
+                        View child = viewGroup.getChildAt(j);
+                        ViewGroup group = (ViewGroup) child;
+
+                        String ingredientName = ((EditText) group.getChildAt(0)).getText().toString();
+                        String quantity = ((EditText) group.getChildAt(1)).getText().toString();
+                        String ingredientQuantity;
+
+                        // replace null values with -
+                        if (quantity.length() != 0) {
+                            ingredientQuantity = quantity;
+                        } else ingredientQuantity = "-";
 
 
+                        String ingredientUnit = ((Spinner) group.getChildAt(2)).getSelectedItem().toString();
 
+                        db.getReadableDatabase();
 
+                        // if ingredientName exists in ingredient table, get ID for that ingredient name
+                        // else, create new ingredient and get last id that was added
+                        int ingredientId;
+                        if (db.checkIngredientExist(ingredientName) != -1) {
+                            ingredientId = db.checkIngredientExist(ingredientName);
+                        } else {
+                            Ingredient ingredient = new Ingredient();
+                            ingredient.setIngredientname(ingredientName);
+                            db.createIngredient(ingredient);
+                            ingredientId = db.getLastIngredientId();
+                        }
+
+                        // recipe id, ingredient id, quantity, unit to Recipe_Ingredients Link table
+                        int recipeId = db.getLastRecipeId();
+
+                        Log.d("ids", "value: " + recipeId);
+                        Log.d("ids", "value: " + ingredientId);
+
+                        RecipeIngredients recipeIngredients = new RecipeIngredients();
+                        recipeIngredients.setIngredient_id(ingredientId);
+                        recipeIngredients.setRecipe_id(recipeId);
+                        recipeIngredients.setQuantity(ingredientQuantity);
+                        recipeIngredients.setUnit(ingredientUnit);
+                        db.createRecipesIngredients(recipeIngredients);
+                        Log.d("created id", "value: " + ingredientId);
+                        Log.d("created", "value: " + ingredientId);
+                        Log.d("ids", "value: " + ingredientId);
+                        Log.d("ids", "value: " + ingredientId);
+                    }
+
+                    // recipe edit confirmation
+                    Toast.makeText(getApplicationContext(), "Recipe Edited!", Toast.LENGTH_SHORT).show();
+
+                    // back to MyRecipes activity
+                    Intent i = new Intent(v2.getContext(), MyRecipes.class);
+                    startActivity(i);
+
+                }
 
             }
-
-
         });
     }
+
 
     @Override
     public boolean onSupportNavigateUp() {
