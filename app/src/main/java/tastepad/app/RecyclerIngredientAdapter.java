@@ -40,9 +40,8 @@ public class RecyclerIngredientAdapter extends RecyclerView.Adapter<RecyclerIngr
             holder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"));
 
         } else {
-            holder.itemView.setBackgroundColor(Color.parseColor("#FFFAA8FD"));
+            holder.itemView.setBackgroundColor(Color.parseColor("#c5c8cc"));
         }
-
 
     }
 

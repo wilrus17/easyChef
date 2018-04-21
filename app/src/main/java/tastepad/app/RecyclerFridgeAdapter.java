@@ -29,8 +29,6 @@ public class RecyclerFridgeAdapter extends RecyclerView.Adapter<RecyclerFridgeAd
     }
 
 
-
-
     public RecyclerFridgeAdapter(ArrayList<fridgeItem> fridgeList) {
         mFridgeList = fridgeList;
 

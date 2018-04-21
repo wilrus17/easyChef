@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 public class MyDBHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "RecipesDB.db";
-    private static final int DATABASE_VERISON = 3;
+    private static final int DATABASE_VERISON = 4;
     public int id;
     Context mContext;
     MyDBHandler db;
@@ -31,6 +31,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public static final String RECIPE_ID = "_recipe_id";
     public static final String RECIPE_NAME = "recipe_name";
     public static final String RECIPE_INSTRUCTIONS = "instructions";
+    public static final String RECIPE_RATING = "rating";
 
     // ingredients table & columns
     public static final String TABLE_INGREDIENTS = "Ingredients";
@@ -43,16 +44,14 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public static final String INGREDIENT_QUANTITY = "ingredient_quantity";
     public static final String INGREDIENT_UNIT = "ingredient_unit";
 
-    public static final String TABLE_SEARCH = "Search";
-    public static final String INGREDIENT_SEARCH = "Ingredient_search";
-
 
     // create table statements
     final String CREATE_TABLE_RECIPES = "CREATE TABLE IF NOT EXISTS " +
             TABLE_RECIPES + "(" +
             RECIPE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             RECIPE_NAME + " TEXT, " +
-            RECIPE_INSTRUCTIONS + " TEXT " +
+            RECIPE_INSTRUCTIONS + " TEXT, " +
+            RECIPE_RATING + " FLOAT " +
             ")";
 
     final String CREATE_TABLE_INGREDIENTS = "CREATE TABLE IF NOT EXISTS " +
@@ -74,7 +73,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
 
     public MyDBHandler(Context context) {
-        super(context, DATABASE_NAME, null, 3);
+        super(context, DATABASE_NAME, null, 4);
     }
 
     @Override
@@ -104,6 +103,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(RECIPE_NAME, recipe.getRecipename());
         values.put(RECIPE_INSTRUCTIONS, recipe.getInstructions());
+
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_RECIPES, null, values);
         db.close();
@@ -144,7 +144,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
             recipe.setInstructions(fetchedRecipeInstructions);
 
             // add record to list
-
             recipeList.add(recipe);
         }
         cursor.close();
@@ -288,7 +287,32 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return list;
     }
 
+    // update table with rating input
+    public void addRating(int id, float rating) {
+        System.out.println(TABLE_RECIPES);
+        String SET_RATING =
+                "UPDATE " + TABLE_RECIPES +
+                        " SET " + RECIPE_RATING + " = " + rating +
+                        " WHERE " + RECIPE_ID + " = " + id;
 
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(SET_RATING);
+        db.close();
+    }
+
+    public float getRating(int id) {
+        String GET_RATING =
+                "SELECT " + RECIPE_RATING +
+                        " FROM " + TABLE_RECIPES +
+                        " WHERE " + RECIPE_ID + "=" + id;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(GET_RATING, null);
+        Log.i("CHECK", "getRating: " + db.rawQuery(GET_RATING, null));
+        c.moveToFirst();
+        float rating =  c.getFloat(0);
+        Log.i("ratingGet", "gotRating: " + rating);
+        return rating;
+    }
 }
 
 

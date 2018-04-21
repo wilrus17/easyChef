@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/sList" android:title="Shopping List" android:icon="@drawable/shopping"/>
+    <item android:id="@+id/pantry" android:title="Pantry" android:icon="@drawable/pantry"/>
+    <item android:id="@+id/recipes" android:title="My Recipe Book" android:icon="@drawable/recipes" />
+
+</menu>

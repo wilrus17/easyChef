@@ -2,6 +2,8 @@ package tastepad.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,7 +32,12 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-public class ShoppingList extends AppCompatActivity  {
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
+
+public class ShoppingList extends AppCompatActivity {
+
+    public DrawerLayout mDrawerlayout;
+    private ActionBarDrawerToggle mToggle;
     private RecyclerView mRecyclerView;
     public RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -44,6 +51,8 @@ public class ShoppingList extends AppCompatActivity  {
 
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String TEXT = "text";
+    private SectionedRecyclerViewAdapter sectionAdapter;
+
 
 
     @Override
@@ -51,8 +60,18 @@ public class ShoppingList extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list);
 
+        mDrawerlayout = (DrawerLayout) findViewById(R.id.drawer);
+
+        SectionedRecyclerViewAdapter sectionAdapter = new SectionedRecyclerViewAdapter();
+        MySection mySection = new MySection();
+        sectionAdapter.addSection(mySection);
+
         loadData();
         buildRecyclerView();
+
+        // sections
+        mySection.addItem(0, "BASKET");
+        mySection.addItem(3, "BASKET");
 
         editTextInsert = (EditText) findViewById(R.id.newItem);
 
@@ -66,7 +85,7 @@ public class ShoppingList extends AppCompatActivity  {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        for(String s : listItems) {
+        for (String s : listItems) {
             mShoppingList.add(new ShoppingItem(s));
             mAdapter.notifyDataSetChanged();
         }
@@ -88,9 +107,6 @@ public class ShoppingList extends AppCompatActivity  {
                 return false;
             }
         });
-
-
-
     }
 
     public void insertItem(String ingredient) {
@@ -105,7 +121,6 @@ public class ShoppingList extends AppCompatActivity  {
 
     public void buildRecyclerView() {
         mRecyclerView = findViewById(R.id.shopping_listView);
-        mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mAdapter = new ShoppingListAdapter(mShoppingList);
 

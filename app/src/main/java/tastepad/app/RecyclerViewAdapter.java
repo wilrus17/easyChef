@@ -21,10 +21,14 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.view.MenuItem;
 import android.widget.Toast;
 import android.support.v7.view.ActionMode.Callback;
+
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,11 +40,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private Context mContext;
     private ArrayList<Recipe> listRecipe;
     private ArrayList<Recipe> filteredList;
-
     private MyDBHandler db;
     private ActionMode mActionmode;
     public int id;
-    MyRecipes filter;
+
 
     public int getId() {
         return id;
@@ -62,6 +65,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public AppCompatTextView textViewRecipeTitle;
         public ImageView img_RecipeThumbnail;
         public View view;
+        public RatingBar ratingBar;
+
 
         public MyViewHolder(View view) {
             super(view);
@@ -71,10 +76,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             textViewRecipeTitle = (AppCompatTextView) itemView.findViewById(R.id.recipe_title);
             img_RecipeThumbnail = (ImageView) itemView.findViewById(R.id.recipe_img);
             cardView = (CardView) itemView.findViewById(R.id.cardView);
+            ratingBar = (RatingBar) itemView.findViewById(R.id.ratingBarCard);
 
         }
     }
-
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -88,9 +93,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
+        MyDBHandler db = new MyDBHandler(mContext);
+
         holder.textViewRecipeTitle.setText(listRecipe.get(position).getRecipename());
+        float rating = db.getRating(listRecipe.get(position).get_id());
+        if(rating != 0.0f){
+            holder.ratingBar.setRating(rating);
+        } else holder.ratingBar.setVisibility(RatingBar.INVISIBLE);
+
         // get image for recipe cardView
         // holder.img_recipe_thumbnail.setImageResource(mData.get(position).getThumbnail());
+
 
         // go to clicked recipe
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +128,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 i.putExtra("Instructions", listRecipe.get(position).getInstructions());
                 i.putExtra("RecipeId", listRecipe.get(position).get_id());
                 i.putExtra("Ingredients", ingredients);
+                i.putExtra("Rating", listRecipe.get(position).getRating());
+                i.putExtra("RECIPE OBJECT", new Gson().toJson(listRecipe.get(position)));
                 Log.i("ingredientsRecycler", Arrays.deepToString(ingredients));
                 mContext.startActivity(i);
             }

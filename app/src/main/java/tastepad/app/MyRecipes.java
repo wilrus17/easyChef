@@ -37,9 +37,7 @@ public class MyRecipes extends AppCompatActivity {
     Context context = MyRecipes.this;
     private RecyclerViewAdapter recyclerViewAdapter;
     private ArrayList<Recipe> listRecipe;
-
     private RecyclerView recyclerViewRecipe;
-
 
     MyDBHandler db = new MyDBHandler(this);
 
