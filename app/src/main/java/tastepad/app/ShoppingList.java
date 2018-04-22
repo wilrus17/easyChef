@@ -30,15 +30,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-
+import java.util.Collection;
+import java.util.List;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 public class ShoppingList extends AppCompatActivity {
@@ -50,17 +47,20 @@ public class ShoppingList extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     private EditText mItemEdit;
     private Button mAddButton;
-    public static ArrayList<ShoppingItem> mShoppingList;
+    private List<ShoppingItem> list;
+
     private Button buttonInsert;
     private EditText editTextInsert;
     private Context mContext;
     static ArrayList<String> listItems = new ArrayList<String>();
     NavigationView navigation;
-
     public static final String SHARED_PREFS = "sharedPrefs";
-    public static final String TEXT = "text";
+    public static final String ITEM = "item";
+    private RecyclerView sectionHeader;
     private SectionedRecyclerViewAdapter sectionAdapter;
 
+    HeaderRecyclerViewSection firstSection = new HeaderRecyclerViewSection("Unchecked", getDataSource());
+    HeaderRecyclerViewSection secondSection = new HeaderRecyclerViewSection("Checked", getDataSource());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,33 +74,34 @@ public class ShoppingList extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Shopping List");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         }
+
         mDrawerlayout = (DrawerLayout) findViewById(R.id.drawer);
         mToggle = new ActionBarDrawerToggle(this, mDrawerlayout, R.string.open, R.string.close);
         mDrawerlayout.addDrawerListener(mToggle);
         mToggle.syncState();
         setNavView();
 
+        // shopping list with sections
+        sectionHeader = (RecyclerView) findViewById(R.id.shopping_listView);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ShoppingList.this);
+        sectionHeader.setLayoutManager(linearLayoutManager);
+        sectionHeader.setHasFixedSize(true);
 
-        SectionedRecyclerViewAdapter sectionAdapter = new SectionedRecyclerViewAdapter();
-        MySection mySection = new MySection();
-        sectionAdapter.addSection(mySection);
+        sectionAdapter = new SectionedRecyclerViewAdapter();
+        sectionAdapter.addSection(firstSection);
+        sectionAdapter.addSection(secondSection);
+        sectionHeader.setAdapter(sectionAdapter);
 
         loadData();
-        buildRecyclerView();
-
-        // sections
-        mySection.addItem(0, "BASKET");
-        mySection.addItem(3, "BASKET");
+        // buildRecyclerView();
 
         editTextInsert = (EditText) findViewById(R.id.newItem);
 
-
-
+        // from recipe page add all ingredients
         for (String s : listItems) {
-            mShoppingList.add(new ShoppingItem(s));
-            mAdapter.notifyDataSetChanged();
+            firstSection.addItem(new ShoppingItem(s));
+            sectionAdapter.notifyDataSetChanged();
         }
 
         // add item on enter key press
@@ -122,23 +123,10 @@ public class ShoppingList extends AppCompatActivity {
         });
     }
 
+    // add item to top section
     public void insertItem(String ingredient) {
-        mShoppingList.add(new ShoppingItem(ingredient));
-        mAdapter.notifyDataSetChanged();
-    }
-
-    public void createShoppingList() {
-        mShoppingList = new ArrayList<>();
-        mShoppingList.add(new ShoppingItem("EGG"));
-    }
-
-    public void buildRecyclerView() {
-        mRecyclerView = findViewById(R.id.shopping_listView);
-        mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new ShoppingListAdapter(mShoppingList);
-
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
+        firstSection.addItem(new ShoppingItem(ingredient));
+        sectionAdapter.notifyDataSetChanged();
     }
 
     // save to shared preferences
@@ -146,7 +134,8 @@ public class ShoppingList extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(mShoppingList);
+        String json = gson.toJson(firstSection.list);
+        Log.i("JSON", "saveData: " + json);
         editor.putString("shopping list", json);
         editor.apply();
     }
@@ -155,13 +144,14 @@ public class ShoppingList extends AppCompatActivity {
     public void loadData() {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
+        List<ShoppingItem> list = new ArrayList<>();
         String json = sharedPreferences.getString("shopping list", null);
-        Type type = new TypeToken<ArrayList<ShoppingItem>>() {
-        }.getType();
-        mShoppingList = gson.fromJson(json, type);
+        Log.i("JSON2", "loadData: " + json);
+        Type type = new TypeToken<List<ShoppingItem>>() {}.getType();
+        firstSection.list.addAll((List<ShoppingItem>) gson.fromJson(json, type));
 
-        if (mShoppingList == null) {
-            mShoppingList = new ArrayList<>();
+        if(firstSection.list == null) {
+            firstSection.list = new ArrayList<>();
         }
     }
 
@@ -209,6 +199,12 @@ public class ShoppingList extends AppCompatActivity {
             }
         });
     }
+
+    private List<ShoppingItem> getDataSource() {
+        List<ShoppingItem> data = new ArrayList<ShoppingItem>();
+        return data;
+    }
+
 }
 
 

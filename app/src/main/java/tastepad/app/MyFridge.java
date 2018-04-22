@@ -64,18 +64,10 @@ public class MyFridge extends AppCompatActivity implements DatePickerDialog.OnDa
         buildRecyclerView();
 
         final EditText itemName = (EditText) findViewById(R.id.newItem);
-        final TextView itemDate = (TextView) findViewById(R.id.dateText);
+        //final TextView itemDate = (TextView) findViewById(R.id.dateText);
 
 
-        // set use by date with calendar
-        Button dateButton = (Button) findViewById(R.id.dateButton);
-        dateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogFragment datepicker = new DatePickerFragment();
-                datepicker.show(getSupportFragmentManager(), "date picker");
-            }
-        });
+
 
         // add item
         Button addItemButton = (Button) findViewById(R.id.newItemFridge);
@@ -84,8 +76,8 @@ public class MyFridge extends AppCompatActivity implements DatePickerDialog.OnDa
             @Override
             public void onClick(View v) {
                 String item = itemName.getText().toString();
-                String date = itemDate.getText().toString();
-                insertItem(item, date);
+                //String date = itemDate.getText().toString();
+                // insertItem(item, date);
             }
         });
     }
@@ -126,8 +118,8 @@ public class MyFridge extends AppCompatActivity implements DatePickerDialog.OnDa
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         String currentDateString = DateFormat.getDateInstance().format(c.getTime());
 
-        TextView textView = (TextView) findViewById(R.id.dateText);
-        textView.setText(currentDateString);
+        //TextView textView = (TextView) findViewById(R.id.dateText);
+        //textView.setText(currentDateString);
     }
 
     public void onBackPressed() {

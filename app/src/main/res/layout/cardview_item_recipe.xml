@@ -21,19 +21,27 @@
             android:layout_height="180dp"
             android:scaleType="centerCrop"
             android:background="#2d2d2d"/>
-
-        <RatingBar
-            android:id="@+id/ratingBarCard"
-            style="?android:attr/ratingBarStyleIndicator"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/recipe_img"
-            android:layout_alignParentStart="true"
-            android:max="5"
-            android:scaleX=".7"
-            android:scaleY=".7"
-            android:transformPivotX="0dp"
-            android:transformPivotY="0dp" />
+            android:layout_marginTop="150dp"
+            >
+
+            <RatingBar
+                android:id="@+id/ratingBarCard"
+                style="?android:attr/ratingBarStyleIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/recipe_img"
+                android:layout_alignParentStart="true"
+                android:max="5"
+                android:scaleX=".7"
+                android:scaleY=".7"
+                android:transformPivotX="0dp"
+                android:transformPivotY="0dp" />
+        </LinearLayout>
+
+
         <TextView
             android:id="@+id/recipe_title"
             android:gravity="center"

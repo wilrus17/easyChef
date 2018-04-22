@@ -42,6 +42,7 @@ public class NewRecipe extends AppCompatActivity {
     EditText recipeTitle;
     MyDBHandler db;
     EditText instructions;
+    private TextView textViewCategory;
 
 
     @Override
@@ -61,6 +62,16 @@ public class NewRecipe extends AppCompatActivity {
         // defining recipe title and instructions
         recipeTitle = (EditText) findViewById(R.id.title_input);
         instructions = (EditText) findViewById(R.id.instructionsIn);
+        textViewCategory = (TextView) findViewById(R.id.category);
+
+        LinearLayout category = (LinearLayout) findViewById(R.id.categoryLayout);
+        category.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialog();
+
+            }
+        });
 
         // defining each ingredient field and the layout
         textIn = (EditText) findViewById(R.id.textin);
@@ -182,6 +193,11 @@ public class NewRecipe extends AppCompatActivity {
 
         });
 
+    }
+
+    public void openDialog() {
+        CategoryDialog categoryDialog = new CategoryDialog();
+        categoryDialog.show(getSupportFragmentManager(), "category dialog");
     }
 
 
