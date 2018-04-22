@@ -5,6 +5,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -27,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,6 +43,9 @@ public class MyRecipes extends AppCompatActivity {
     private RecyclerViewAdapter recyclerViewAdapter;
     private ArrayList<Recipe> listRecipe;
     private RecyclerView recyclerViewRecipe;
+    public DrawerLayout mDrawerlayout;
+    private ActionBarDrawerToggle mToggle;
+    NavigationView navigation;
 
     MyDBHandler db = new MyDBHandler(this);
 
@@ -46,15 +54,20 @@ public class MyRecipes extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_recipes);
 
-        // toolbar
+        // set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("My Recipes");
+            getSupportActionBar().setTitle("Recipe Book");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         }
+        mDrawerlayout = (DrawerLayout) findViewById(R.id.drawer);
+        mToggle = new ActionBarDrawerToggle(this, mDrawerlayout, R.string.open, R.string.close);
+        mDrawerlayout.addDrawerListener(mToggle);
+        mToggle.syncState();
+        setNavView();
 
         initialiseViews();
         initialiseObjects();
@@ -126,14 +139,28 @@ public class MyRecipes extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
+
+    public void onBackPressed() {
+        if (mDrawerlayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerlayout.closeDrawer(GravityCompat.START);
+
+        } else {
+            super.onBackPressed();
+        }
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (mToggle.onOptionsItemSelected(item)) {
+            InputMethodManager inputManager = (InputMethodManager)
+                    getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
+            return true;
+        }
         switch (item.getItemId()) {
             // click + to create new recipe
             case R.id.plus_button:
@@ -159,9 +186,7 @@ public class MyRecipes extends AppCompatActivity {
         }
         etText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.search_icon, 0);
         return true;
-
     }
-
 
     private boolean filter(String text) {
         text = text.toLowerCase();
@@ -192,6 +217,32 @@ public class MyRecipes extends AppCompatActivity {
         recyclerViewAdapter.filterList(newList);
         return true;
     }
+
+    public void setNavView() {
+        navigation = (NavigationView) findViewById(R.id.nav_view);
+        navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                switch (id) {
+                    case R.id.sList:
+                        Intent i = new Intent(MyRecipes.this, ShoppingList.class);
+                        startActivity(i);
+                        break;
+                    case R.id.pantry:
+                        Intent x = new Intent(MyRecipes.this, MyFridge.class);
+                        startActivity(x);
+                        break;
+                    case R.id.recipes:
+                        mDrawerlayout.closeDrawers();
+                        break;
+                }
+                return false;
+            }
+        });
+    }
+
+
 
 
 }

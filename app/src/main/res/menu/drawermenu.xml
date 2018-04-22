@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:showIn="navigation_view">
 
     <item android:id="@+id/sList" android:title="Shopping List" android:icon="@drawable/shopping"/>
     <item android:id="@+id/pantry" android:title="Pantry" android:icon="@drawable/pantry"/>

@@ -4,6 +4,8 @@
     <string name="item_editText_hint">Write a new item</string>
     <string name="appName">easyChef</string>
     <string name="TODO">TODO</string>
+    <string name="open">Open</string>
+    <string name="close">close</string>
 
 
     <string name="action_settings">Settings</string>

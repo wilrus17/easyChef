@@ -22,7 +22,7 @@ class MySection extends StatelessSection {
     }
 
     public void addItem(int position, String item) {
-        myList.add(position, item);
+       // myList.add(position, item);
     }
 
     public void removeItem(int position) {

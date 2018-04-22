@@ -1,7 +1,11 @@
 package tastepad.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,8 +19,10 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 
 import com.google.gson.Gson;
@@ -48,11 +55,11 @@ public class ShoppingList extends AppCompatActivity {
     private EditText editTextInsert;
     private Context mContext;
     static ArrayList<String> listItems = new ArrayList<String>();
+    NavigationView navigation;
 
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String TEXT = "text";
     private SectionedRecyclerViewAdapter sectionAdapter;
-
 
 
     @Override
@@ -60,7 +67,21 @@ public class ShoppingList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list);
 
+        // set toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Shopping List");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        }
         mDrawerlayout = (DrawerLayout) findViewById(R.id.drawer);
+        mToggle = new ActionBarDrawerToggle(this, mDrawerlayout, R.string.open, R.string.close);
+        mDrawerlayout.addDrawerListener(mToggle);
+        mToggle.syncState();
+        setNavView();
+
 
         SectionedRecyclerViewAdapter sectionAdapter = new SectionedRecyclerViewAdapter();
         MySection mySection = new MySection();
@@ -75,15 +96,7 @@ public class ShoppingList extends AppCompatActivity {
 
         editTextInsert = (EditText) findViewById(R.id.newItem);
 
-        // set toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
-        setSupportActionBar(toolbar);
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Shopping List");
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
 
         for (String s : listItems) {
             mShoppingList.add(new ShoppingItem(s));
@@ -152,11 +165,49 @@ public class ShoppingList extends AppCompatActivity {
         }
     }
 
-    // toolbar back arrow click
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
+    public void onBackPressed() {
+        if (mDrawerlayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerlayout.closeDrawer(GravityCompat.START);
+
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mToggle.onOptionsItemSelected(item)) {
+            InputMethodManager inputManager = (InputMethodManager)
+                    getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void setNavView() {
+        navigation = (NavigationView) findViewById(R.id.nav_view);
+        navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                switch (id) {
+                    case R.id.sList:
+                        mDrawerlayout.closeDrawers();
+                        break;
+                    case R.id.pantry:
+                        Intent i = new Intent(ShoppingList.this, MyFridge.class);
+                        startActivity(i);
+                        break;
+                    case R.id.recipes:
+                        Intent x = new Intent(ShoppingList.this, MyRecipes.class);
+                        startActivity(x);
+                        break;
+                }
+                return false;
+            }
+        });
     }
 }
 
