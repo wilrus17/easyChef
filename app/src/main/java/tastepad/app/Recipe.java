@@ -6,6 +6,7 @@ public class Recipe {
     private String recipename;
     private String instructions;
     private float rating;
+    private String servings;
 
     // constructors
     public Recipe(int _id, String recipename, String instructions) {
@@ -36,6 +37,9 @@ public class Recipe {
     public void setRating(float rating) {
         this.rating = rating;
     }
+    public void setServings(String servings) {
+        this.servings = servings;
+    }
 
     // getters
     public int get_id() {
@@ -49,6 +53,9 @@ public class Recipe {
     }
     public float getRating() {
         return rating;
+    }
+    public String getServings() {
+        return servings;
     }
 }
 

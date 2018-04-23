@@ -112,7 +112,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                 // fetch ingredients w/ quantity & unit and put into an array
                 int id = listRecipe.get(position).get_id();
-                Log.d("int", "value: " + id);
+                Log.d("id", "clicked recipe id: " + id);
 
                 if (mActionmode != null)  {
                     mActionmode.finish();
@@ -129,8 +129,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 i.putExtra("RecipeId", listRecipe.get(position).get_id());
                 i.putExtra("Ingredients", ingredients);
                 i.putExtra("Rating", listRecipe.get(position).getRating());
+                i.putExtra("Servings", listRecipe.get(position).getServings());
                 i.putExtra("RECIPE OBJECT", new Gson().toJson(listRecipe.get(position)));
                 Log.i("ingredientsRecycler", Arrays.deepToString(ingredients));
+
                 mContext.startActivity(i);
             }
         });

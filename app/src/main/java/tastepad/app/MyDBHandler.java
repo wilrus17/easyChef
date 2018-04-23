@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 public class MyDBHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "RecipesDB.db";
-    private static final int DATABASE_VERISON = 4;
+    private static final int DATABASE_VERISON = 6;
     public int id;
     Context mContext;
     MyDBHandler db;
@@ -32,6 +32,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public static final String RECIPE_NAME = "recipe_name";
     public static final String RECIPE_INSTRUCTIONS = "instructions";
     public static final String RECIPE_RATING = "rating";
+    public static final String RECIPE_SERVINGS = "servings";
+    public static final String RECIPE_CATEGORY = "categories";
 
     // ingredients table & columns
     public static final String TABLE_INGREDIENTS = "Ingredients";
@@ -51,7 +53,9 @@ public class MyDBHandler extends SQLiteOpenHelper {
             RECIPE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             RECIPE_NAME + " TEXT, " +
             RECIPE_INSTRUCTIONS + " TEXT, " +
-            RECIPE_RATING + " FLOAT " +
+            RECIPE_RATING + " FLOAT, " +
+            RECIPE_SERVINGS + " STRING, " +
+            RECIPE_CATEGORY + " STRING " +
             ")";
 
     final String CREATE_TABLE_INGREDIENTS = "CREATE TABLE IF NOT EXISTS " +
@@ -73,7 +77,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
 
     public MyDBHandler(Context context) {
-        super(context, DATABASE_NAME, null, 4);
+        super(context, DATABASE_NAME, null, 6);
     }
 
     @Override
@@ -103,6 +107,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(RECIPE_NAME, recipe.getRecipename());
         values.put(RECIPE_INSTRUCTIONS, recipe.getInstructions());
+        values.put(RECIPE_SERVINGS, recipe.getServings());
+        Log.i("Servings", "dbCreate: " + recipe.getServings());
 
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_RECIPES, null, values);
@@ -139,9 +145,13 @@ public class MyDBHandler extends SQLiteOpenHelper {
             String fetchedRecipeInstructions =
                     cursor.getString(cursor.getColumnIndex(RECIPE_INSTRUCTIONS));
 
+            String fetchedRecipeServings =
+                    cursor.getString(cursor.getColumnIndex(RECIPE_SERVINGS));
+
             recipe.set_id(fetchedRecipeId);
             recipe.setRecipename(fetchedRecipe);
             recipe.setInstructions(fetchedRecipeInstructions);
+            recipe.setServings(fetchedRecipeServings);
 
             // add record to list
             recipeList.add(recipe);

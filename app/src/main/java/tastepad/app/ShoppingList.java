@@ -48,7 +48,6 @@ public class ShoppingList extends AppCompatActivity {
     private EditText mItemEdit;
     private Button mAddButton;
     private List<ShoppingItem> list;
-
     private Button buttonInsert;
     private EditText editTextInsert;
     private Context mContext;
@@ -57,15 +56,17 @@ public class ShoppingList extends AppCompatActivity {
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String ITEM = "item";
     private RecyclerView sectionHeader;
-    private SectionedRecyclerViewAdapter sectionAdapter;
-
+    public SectionedRecyclerViewAdapter sectionAdapter;
     HeaderRecyclerViewSection firstSection = new HeaderRecyclerViewSection("Unchecked", getDataSource());
     HeaderRecyclerViewSection secondSection = new HeaderRecyclerViewSection("Checked", getDataSource());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list);
+
 
         // set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
@@ -123,9 +124,15 @@ public class ShoppingList extends AppCompatActivity {
         });
     }
 
+
     // add item to top section
     public void insertItem(String ingredient) {
-        firstSection.addItem(new ShoppingItem(ingredient));
+
+        sectionAdapter.notifyDataSetChanged();
+    }
+
+    public void deleteItem(ShoppingItem shoppingItem) {
+        firstSection.removeItem(shoppingItem);
         sectionAdapter.notifyDataSetChanged();
     }
 

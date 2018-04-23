@@ -13,6 +13,7 @@
     <string name="btnRemove">Remove</string>
     <string name="btnAdd">Add</string>
     <string name="btnDisplay">Show</string>
+    <string name="servings">%1$s Servings</string>
 
     <string-array name="units_array">
         <item></item>

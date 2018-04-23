@@ -1,5 +1,6 @@
 package tastepad.app;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,25 +10,28 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FragmentIngredients extends Fragment {
+public class FragmentIngredients extends Fragment implements NumberPicker.OnValueChangeListener {
 
     View v;
     private RecyclerView myrecyclerview;
     private List<IngredientCard> lstIngredient;
 
-    public static final FragmentIngredients newInstance(String[][] someIngredients) {
+
+    public static final FragmentIngredients newInstance(String[][] someIngredients, String servings) {
         FragmentIngredients fragmentIngredients = new FragmentIngredients();
         Bundle args = new Bundle();
+        args.putString("servingSize", servings);
         args.putSerializable("someIngredients", someIngredients);
         fragmentIngredients.setArguments(args);
         return fragmentIngredients;
-
     }
 
     @Override
@@ -35,22 +39,42 @@ public class FragmentIngredients extends Fragment {
 
         lstIngredient = new ArrayList<>();
         View view = inflater.inflate(R.layout.ingredients_fragment, container, false);
+        final Button setServings = (Button) view.findViewById(R.id.servingSelect);
+        ViewGroup layout = (ViewGroup) setServings.getParent();
 
         String[][] mIngredients = (String[][]) getArguments().getSerializable("someIngredients");
+        String mServings = (String) getArguments().get("servingSize");
         Log.d("Ingredients", Arrays.toString(mIngredients));
+        Log.d("Servings", "mServings got:" + mServings);
+
+        if (mServings != null && !mServings.isEmpty()) {
+            String servingSize = getString(R.string.servings, mServings);
+            setServings.setText(servingSize);
+        } else setServings.setVisibility(View.GONE);
+
 
         // get each ingredient, quantity, unit
-        for (int i=0; i< mIngredients.length; i++){
+        for (int i = 0; i < mIngredients.length; i++) {
             String ingredient = mIngredients[i][0];
             String quantity = mIngredients[i][1];
             String unit = mIngredients[i][2];
 
             // create recycler view item
-            lstIngredient.add(new IngredientCard(ingredient ,quantity + " " + unit));
+            lstIngredient.add(new IngredientCard(ingredient, quantity + " " + unit));
         }
 
+        setServings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                show(setServings);
+            }
+        });
+
+        Bundle bundle = new Bundle();
+
+
         myrecyclerview = (RecyclerView) view.findViewById(R.id.ingredientsList);
-        RecyclerIngredientAdapter recyclerAdapter = new RecyclerIngredientAdapter(getContext(),lstIngredient);
+        RecyclerIngredientAdapter recyclerAdapter = new RecyclerIngredientAdapter(getContext(), lstIngredient);
         myrecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
         // dividers between ingredients
         myrecyclerview.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
@@ -58,8 +82,50 @@ public class FragmentIngredients extends Fragment {
 
         return view;
     }
+    @Override
+    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
 
+        Log.i("value is",""+newVal);
+
+    }
+
+    public void show(final Button button) {
+
+        final Dialog d = new Dialog(getActivity(), R.style.LightDialogTheme);
+
+        d.setTitle("NumberPicker");
+        d.setContentView(R.layout.dialog_servings);
+        Button b1 = (Button) d.findViewById(R.id.button1);
+        Button b2 = (Button) d.findViewById(R.id.button2);
+        final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
+        np.setMaxValue(100); // max value 100
+        np.setMinValue(0);   // min value 0
+        np.setWrapSelectorWheel(false);
+        np.setOnValueChangedListener(this);
+        b1.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                String servingSize = getString(R.string.servings, String.valueOf(np.getValue()));
+                button.setText(servingSize); //set the value to textview
+                d.dismiss();
+            }
+        });
+        b2.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                d.dismiss(); // dismiss the dialog
+            }
+        });
+        d.show();
+
+
+    }
 }
+
+
+
 
 
 

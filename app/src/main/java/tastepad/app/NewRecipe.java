@@ -42,8 +42,8 @@ public class NewRecipe extends AppCompatActivity {
     EditText recipeTitle;
     MyDBHandler db;
     EditText instructions;
-    private TextView textViewCategory;
-
+    EditText servings;
+    TextView category;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,10 +59,11 @@ public class NewRecipe extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        // defining recipe title and instructions
+        // recipe details fields
         recipeTitle = (EditText) findViewById(R.id.title_input);
         instructions = (EditText) findViewById(R.id.instructionsIn);
-        textViewCategory = (TextView) findViewById(R.id.category);
+        category = (TextView) findViewById(R.id.category);
+        servings = (EditText) findViewById(R.id.servings);
 
         LinearLayout category = (LinearLayout) findViewById(R.id.categoryLayout);
         category.setOnClickListener(new OnClickListener() {
@@ -131,6 +132,8 @@ public class NewRecipe extends AppCompatActivity {
                     Recipe recipe = new Recipe();
                     recipe.setRecipename(recipeTitle.getText().toString());
                     recipe.setInstructions(instructions.getText().toString());
+                    recipe.setServings(servings.getText().toString());
+                    Log.i("Servings", "createRecipe: " + servings.getText().toString());
                     db.createRecipe(recipe);
 
                     // identify each ingredient, quantity, unit
@@ -200,14 +203,11 @@ public class NewRecipe extends AppCompatActivity {
         categoryDialog.show(getSupportFragmentManager(), "category dialog");
     }
 
-
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
     }
-
-
 }
 
 
