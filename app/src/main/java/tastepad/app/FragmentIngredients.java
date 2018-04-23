@@ -43,7 +43,7 @@ public class FragmentIngredients extends Fragment implements NumberPicker.OnValu
         ViewGroup layout = (ViewGroup) setServings.getParent();
 
         String[][] mIngredients = (String[][]) getArguments().getSerializable("someIngredients");
-        String mServings = (String) getArguments().get("servingSize");
+        final String mServings = (String) getArguments().get("servingSize");
         Log.d("Ingredients", Arrays.toString(mIngredients));
         Log.d("Servings", "mServings got:" + mServings);
 
@@ -59,14 +59,19 @@ public class FragmentIngredients extends Fragment implements NumberPicker.OnValu
             String quantity = mIngredients[i][1];
             String unit = mIngredients[i][2];
 
+            float quantity1;
+            if(quantity.equals("")){
+                quantity1 = 0;
+            } else quantity1 = Float.parseFloat(quantity);
+
             // create recycler view item
-            lstIngredient.add(new IngredientCard(ingredient, quantity + " " + unit));
+            lstIngredient.add(new IngredientCard(ingredient, quantity1, unit));
         }
 
         setServings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                show(setServings);
+                show(setServings, mServings);
             }
         });
 
@@ -89,10 +94,12 @@ public class FragmentIngredients extends Fragment implements NumberPicker.OnValu
 
     }
 
-    public void show(final Button button) {
+    public void show(final Button button, final String originalServings) {
 
         final Dialog d = new Dialog(getActivity(), R.style.LightDialogTheme);
 
+        final float originalServingSize = Float.parseFloat(originalServings);
+        Log.i("servingSize", "original serving size: " + originalServingSize);
         d.setTitle("NumberPicker");
         d.setContentView(R.layout.dialog_servings);
         Button b1 = (Button) d.findViewById(R.id.button1);
@@ -107,7 +114,9 @@ public class FragmentIngredients extends Fragment implements NumberPicker.OnValu
             @Override
             public void onClick(View v) {
                 String servingSize = getString(R.string.servings, String.valueOf(np.getValue()));
+                float servings = np.getValue();
                 button.setText(servingSize); //set the value to textview
+                changeQuantity(originalServingSize, servings);
                 d.dismiss();
             }
         });
@@ -119,6 +128,28 @@ public class FragmentIngredients extends Fragment implements NumberPicker.OnValu
             }
         });
         d.show();
+    }
+
+    public void changeQuantity(float original, float altered) {
+        ArrayList<IngredientCard> alteredQuantitylist = new ArrayList<>();
+        for(IngredientCard card : lstIngredient){
+        float quantity = card.getQuantity();
+        String unit = card.getUnit();
+        String name = card.getName();
+        float adjustedQuantity = quantity*(altered/original);
+        String adjustedString = String.format("%.3f", adjustedQuantity);
+        float finalQuantity = Float.parseFloat(adjustedString);
+        IngredientCard ingredientCard = new IngredientCard();
+        ingredientCard.setQuantity(finalQuantity);
+        ingredientCard.setName(name);
+        ingredientCard.setUnit(unit);
+        alteredQuantitylist.add(ingredientCard);
+
+        }
+        myrecyclerview.setAdapter(new RecyclerIngredientAdapter(getContext(), alteredQuantitylist));
+        myrecyclerview.invalidate();
+
+
 
 
     }

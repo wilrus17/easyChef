@@ -3,15 +3,17 @@ package tastepad.app;
 public class IngredientCard {
 
     private String Name;
-    private String Quantity;
+    private float Quantity;
+    private String Unit;
 
     public IngredientCard(){
 
     }
 
-    public IngredientCard(String name, String quantity) {
+    public IngredientCard(String name, float quantity, String unit) {
         Name = name;
         Quantity = quantity;
+        Unit = unit;
     }
 
 
@@ -21,17 +23,24 @@ public class IngredientCard {
         return Name;
     }
 
-    public String getQuantity() {
+    public float getQuantity() {
         return Quantity;
     }
 
+    public String getUnit() {
+        return Unit;
+    }
     // setters
 
     public void setName(String name) {
         Name = name;
     }
 
-    public void setQuantity(String quantity) {
+    public void setQuantity(float quantity) {
         Quantity = quantity;
+    }
+
+    public void setUnit(String unit) {
+        Unit = unit;
     }
 }

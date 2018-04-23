@@ -33,7 +33,7 @@ public class RecyclerIngredientAdapter extends RecyclerView.Adapter<RecyclerIngr
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         holder.tv_name.setText(mData.get(position).getName());
-        holder.tv_quantity.setText(mData.get(position).getQuantity());
+        holder.tv_quantity.setText(mData.get(position).getQuantity() + mData.get(position).getUnit());
 
         // alternate ingredient colours
         if (position % 2 == 0) {

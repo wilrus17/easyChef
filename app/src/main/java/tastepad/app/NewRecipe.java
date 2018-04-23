@@ -146,11 +146,7 @@ public class NewRecipe extends AppCompatActivity {
                         String quantity = ((EditText) group.getChildAt(1)).getText().toString();
                         String ingredientQuantity;
 
-                        // replace null values with -
-                        if (quantity.length() != 0) {
-                            ingredientQuantity = quantity;
-                        } else ingredientQuantity = "-";
-
+                        ingredientQuantity = quantity;
 
                         String ingredientUnit = ((Spinner) group.getChildAt(2)).getSelectedItem().toString();
 
