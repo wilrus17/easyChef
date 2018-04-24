@@ -44,7 +44,6 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapt
 public class ShoppingList extends AppCompatActivity {
 
 
-
     public DrawerLayout mDrawerlayout;
     private ActionBarDrawerToggle mToggle;
     private RecyclerView mRecyclerView;
@@ -67,8 +66,6 @@ public class ShoppingList extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list);
@@ -100,8 +97,7 @@ public class ShoppingList extends AppCompatActivity {
         sectionAdapter.addSection(secondSection);
         sectionHeader.setAdapter(sectionAdapter);
 
-        //loadData();
-        // buildRecyclerView();
+        loadData();
 
         editTextInsert = (EditText) findViewById(R.id.newItem);
 
@@ -125,7 +121,7 @@ public class ShoppingList extends AppCompatActivity {
                         sectionAdapter.notifyDataSetChanged();
 
                         Toast.makeText(getApplicationContext(), ingredient + " added", Toast.LENGTH_SHORT).show();
-                        saveData();
+
                         editTextInsert.setText("");
                         return true;
                     }
@@ -135,16 +131,13 @@ public class ShoppingList extends AppCompatActivity {
         });
     }
 
-
-
     public static void moveItem(ShoppingItem item) {
         if (item.getChecked()) {
             secondSection.addItem(item);
-            } else {
-           firstSection.addItem(item);
-           }
+        } else {
+            firstSection.addItem(item);
+        }
         sectionAdapter.notifyDataSetChanged();
-
     }
 
     public static void deleteItem() {
@@ -156,29 +149,34 @@ public class ShoppingList extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(firstSection);
+        String json = gson.toJson(firstSection.list);
+
         Log.i("JSON", "saveData: " + json);
         editor.putString("shopping list", json);
+
         editor.apply();
     }
 
     // load from shared preferences
 
-    /*
+
     public void loadData() {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
-        List<ShoppingItem> list = new ArrayList<>();
         String json = sharedPreferences.getString("shopping list", null);
-        Type type = new TypeToken<List<ShoppingItem>>() {}.getType();
-        list = gson.fromJson(json, type);
+        Type type = new TypeToken<ArrayList<ShoppingItem>>() {
+        }.getType();
+        // put data into new list, if item is checked add to list
+        ArrayList<ShoppingItem> list = new ArrayList<>();
         list.addAll((List<ShoppingItem>) gson.fromJson(json, type));
-
-
-        if(firstSection.list == null) {
-            firstSection.list = new ArrayList<>();
+        for(ShoppingItem item : list){
+            if (item.getChecked()){
+                firstSection.list.add(item);
+            }
         }
-    } */
+
+
+    }
 
     public void onBackPressed() {
         if (mDrawerlayout.isDrawerOpen(GravityCompat.START)) {
@@ -212,10 +210,12 @@ public class ShoppingList extends AppCompatActivity {
                         mDrawerlayout.closeDrawers();
                         break;
                     case R.id.pantry:
+                        saveData();
                         Intent i = new Intent(ShoppingList.this, MyFridge.class);
                         startActivity(i);
                         break;
                     case R.id.recipes:
+                        saveData();
                         Intent x = new Intent(ShoppingList.this, MyRecipes.class);
                         startActivity(x);
                         break;

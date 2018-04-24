@@ -53,6 +53,7 @@ public class HeaderRecyclerViewSection extends StatelessSection {
         iHolder.itemContent.setText(currentItem.getItemName());
         iHolder.checkBox.setChecked(currentItem.getChecked());
 
+        // onclick checkbox, toggle checked<->unchecked
         iHolder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,11 +63,13 @@ public class HeaderRecyclerViewSection extends StatelessSection {
 
                 } else list.get(position).setChecked(true);
 
+                // add item to other section, remove from current
                 ShoppingList.moveItem(currentItem);
                 list.remove(currentItem);
+
             }
         });
-        
+
 
     }
 
