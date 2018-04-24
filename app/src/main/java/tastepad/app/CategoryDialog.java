@@ -82,6 +82,7 @@ public class CategoryDialog extends AppCompatDialogFragment {
                             if (category.getChecked()) {
                                 lstCategoryChecked.add(category);
                             }
+
                         }
 
                         Log.i("categories", "checked: " + lstCategoryChecked);

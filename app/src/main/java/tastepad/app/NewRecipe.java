@@ -30,6 +30,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFragmentInteractionListener {
@@ -215,12 +216,19 @@ public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFra
 
 
     @Override
-    public void onFragmentSetCategories(ArrayList<Category> categories) {
+    public void onFragmentSetCategories(final ArrayList<Category> categories) {
         checkedCategories = categories;
-        Log.i("categories", "checkedcategories: " + categories);
-        if(checkedCategories != null) {
-
+        List<Category> checked = categories;
+        List<String> categoryList = new ArrayList<String>();
+        for (Category category : checked) {
+            categoryList.add(category.getName());
         }
+        StringBuilder listString = new StringBuilder();
+
+        for (String s : categoryList)
+            listString.append(s+" ");
+        tv_categories.setText(listString);
+
 
 
     }

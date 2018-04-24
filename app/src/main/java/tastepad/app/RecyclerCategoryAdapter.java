@@ -53,21 +53,20 @@ public class RecyclerCategoryAdapter extends RecyclerView.Adapter<RecyclerCatego
         if (position < Categories.size()) {
             final Category category = Categories.get(position);
             holder.tv_name.setText(category.getName());
+            holder.checkBox.setChecked(category.getChecked());
 
-            /*
-            holder.checkBox.setOnCheckedChangeListener(null);
+            // toggle category checked<->unchecked
             holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-                        category.setChecked(false);
-
+                    if (Categories.get(position).getChecked()) {
+                        Categories.get(position).setChecked(false);
                     } else {
-                        category.setChecked(true);
+                        Categories.get(position).setChecked(true);
                     }
                 }
             });
-            holder.checkBox.setChecked(category.getChecked()); */
+
 
 
         }
