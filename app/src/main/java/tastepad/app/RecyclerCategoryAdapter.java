@@ -7,7 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -26,9 +29,9 @@ public class RecyclerCategoryAdapter extends RecyclerView.Adapter<RecyclerCatego
         this.mInflater = mInflater;
     }
 
-    @NonNull
+
     @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View v;
         if (count >= Categories.size()) {
@@ -36,6 +39,7 @@ public class RecyclerCategoryAdapter extends RecyclerView.Adapter<RecyclerCatego
             v.setTag("ADD");
         } else {
             v = LayoutInflater.from(mContext).inflate(R.layout.item_category, parent, false);
+
             v.setTag(null);
         }
         count += 1;
@@ -45,11 +49,30 @@ public class RecyclerCategoryAdapter extends RecyclerView.Adapter<RecyclerCatego
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
         if (position < Categories.size()) {
             final Category category = Categories.get(position);
-            holder.tv_name.setText(Categories.get(position).getName());
+            holder.tv_name.setText(category.getName());
+
+            /*
+            holder.checkBox.setOnCheckedChangeListener(null);
+            holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        category.setChecked(false);
+
+                    } else {
+                        category.setChecked(true);
+                    }
+                }
+            });
+            holder.checkBox.setChecked(category.getChecked()); */
+
+
         }
+
+
     }
 
     @Override
@@ -60,17 +83,21 @@ public class RecyclerCategoryAdapter extends RecyclerView.Adapter<RecyclerCatego
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         private TextView tv_name;
+        private CheckBox checkBox;
         private EditText editText_newCategory;
+
 
         public MyViewHolder(View itemView) {
             super(itemView);
 
-            if (itemView.getTag() == "ADD"){
+            if (itemView.getTag() == "ADD") {
                 tv_name = null;
-            }
-            else{
-               tv_name = (TextView) itemView.findViewById(R.id.tv_category);
-               editText_newCategory = (EditText) itemView.findViewById(R.id.editText_category);
+
+
+            } else {
+                tv_name = (TextView) itemView.findViewById(R.id.tv_category);
+                checkBox = (CheckBox) itemView.findViewById(R.id.checkBox);
+                editText_newCategory = (EditText) itemView.findViewById(R.id.editText_category);
             }
 
 

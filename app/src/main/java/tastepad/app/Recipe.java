@@ -1,5 +1,7 @@
 package tastepad.app;
 
+import java.util.ArrayList;
+
 public class Recipe {
 
     private int _id;
@@ -7,6 +9,7 @@ public class Recipe {
     private String instructions;
     private float rating;
     private String servings;
+    private ArrayList<Category> categories;
 
     // constructors
     public Recipe(int _id, String recipename, String instructions) {
@@ -40,6 +43,9 @@ public class Recipe {
     public void setServings(String servings) {
         this.servings = servings;
     }
+    public void setCategories(ArrayList<Category> categories) {
+        this.categories = categories;
+    }
 
     // getters
     public int get_id() {
@@ -56,6 +62,9 @@ public class Recipe {
     }
     public String getServings() {
         return servings;
+    }
+    public ArrayList<Category> getCategories() {
+        return categories;
     }
 }
 

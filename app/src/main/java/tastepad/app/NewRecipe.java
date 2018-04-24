@@ -28,9 +28,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class NewRecipe extends AppCompatActivity {
+public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFragmentInteractionListener {
 
     EditText textIn;
     EditText quantityIn;
@@ -43,7 +45,8 @@ public class NewRecipe extends AppCompatActivity {
     MyDBHandler db;
     EditText instructions;
     EditText servings;
-    TextView category;
+    TextView tv_categories;
+    private ArrayList<Category> checkedCategories;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,8 +65,11 @@ public class NewRecipe extends AppCompatActivity {
         // recipe details fields
         recipeTitle = (EditText) findViewById(R.id.title_input);
         instructions = (EditText) findViewById(R.id.instructionsIn);
-        category = (TextView) findViewById(R.id.category);
+        tv_categories = (TextView) findViewById(R.id.category);
         servings = (EditText) findViewById(R.id.servings);
+
+
+
 
         LinearLayout category = (LinearLayout) findViewById(R.id.categoryLayout);
         category.setOnClickListener(new OnClickListener() {
@@ -133,6 +139,8 @@ public class NewRecipe extends AppCompatActivity {
                     recipe.setRecipename(recipeTitle.getText().toString());
                     recipe.setInstructions(instructions.getText().toString());
                     recipe.setServings(servings.getText().toString());
+                    recipe.setCategories(checkedCategories);
+
                     Log.i("Servings", "createRecipe: " + servings.getText().toString());
                     db.createRecipe(recipe);
 
@@ -203,6 +211,18 @@ public class NewRecipe extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+
+    @Override
+    public void onFragmentSetCategories(ArrayList<Category> categories) {
+        checkedCategories = categories;
+        Log.i("categories", "checkedcategories: " + categories);
+        if(checkedCategories != null) {
+
+        }
+
+
     }
 }
 
