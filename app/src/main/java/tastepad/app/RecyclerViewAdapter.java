@@ -198,12 +198,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public void filterList(ArrayList<Recipe> filteredList) {
         this.filteredList = filteredList;
-        ArrayList<Recipe> List = new ArrayList<>();
-        for(Recipe recipe : filteredList){
-            if(listRecipe.contains(recipe)){
-                List.add(recipe);
-            }
-        }
+
 
         listRecipe = filteredList;
         notifyDataSetChanged();

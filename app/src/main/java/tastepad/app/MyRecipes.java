@@ -50,7 +50,7 @@ public class MyRecipes extends AppCompatActivity {
     NavigationView navigation;
     public Spinner spinner;
     public String selectedCategory;
-    public String selectedIngredients;
+    private String selectedIngredients;
 
     MyDBHandler db = new MyDBHandler(this);
 
@@ -94,11 +94,11 @@ public class MyRecipes extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 Log.i("selected@TextChange", "selected category: " + selectedCategory);
-                if(s == null){
+                setString(s.toString());
+                if (s.toString().length() == 0) {
                     filterCategory(selectedCategory);
                 } else
-                setString(s.toString());
-                filter(selectedIngredients, selectedCategory);
+                    filter(selectedIngredients, selectedCategory);
 
             }
         });
@@ -168,8 +168,12 @@ public class MyRecipes extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = spinner.getSelectedItem().toString();
                 setSelectedCategory(item);
-                filter(selectedIngredients, item);
-                Log.i("selected", "selected category: " + item);
+
+                if (selectedIngredients != null) {
+                    filter(selectedIngredients, selectedCategory);
+                } else {
+                    filterCategory(selectedCategory);
+                }
             }
 
             @Override
@@ -209,7 +213,6 @@ public class MyRecipes extends AppCompatActivity {
                 return true;
 
 
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -233,9 +236,9 @@ public class MyRecipes extends AppCompatActivity {
 
     private boolean filter(String text, String selectedCategory) {
 
-        if(text == null) {
-        filterCategory(selectedCategory);
-         return true;
+        if (text == null) {
+            filterCategory(selectedCategory);
+            return true;
         }
         text = text.toLowerCase();
         String text2 = text.replaceAll("^[,\\s]+", "");
@@ -244,7 +247,7 @@ public class MyRecipes extends AppCompatActivity {
 
         // early return
         if (text2.isEmpty()) {
-            recyclerViewAdapter.filterList(listRecipe);
+            filterCategory(selectedCategory);
             return true;
         }
 
@@ -270,7 +273,9 @@ public class MyRecipes extends AppCompatActivity {
 
     private boolean filterCategory(String categoryName) {
 
-        if (categoryName == "All") {
+        Log.i("selected@filterCategory", "selected category: " + selectedCategory);
+
+        if (categoryName.equals("All")) {
             recyclerViewAdapter.filterList(listRecipe);
             return true;
         }
