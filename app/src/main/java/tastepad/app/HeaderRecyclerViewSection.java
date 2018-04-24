@@ -1,4 +1,5 @@
 package tastepad.app;
+
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -11,7 +12,7 @@ import java.util.List;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 
-public class HeaderRecyclerViewSection extends StatelessSection{
+public class HeaderRecyclerViewSection extends StatelessSection {
     private static final String TAG = HeaderRecyclerViewSection.class.getSimpleName();
     private String title;
     public List<ShoppingItem> list;
@@ -25,6 +26,7 @@ public class HeaderRecyclerViewSection extends StatelessSection{
         this.title = title;
         this.list = list;
     }
+
     @Override
     public int getContentItemsTotal() {
         return list.size();
@@ -42,27 +44,37 @@ public class HeaderRecyclerViewSection extends StatelessSection{
     public RecyclerView.ViewHolder getItemViewHolder(View view) {
         return new ItemViewHolder(view);
     }
+
     @Override
-    public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
-        final ItemViewHolder iHolder = (ItemViewHolder)holder;
+    public void onBindItemViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        final ItemViewHolder iHolder = (ItemViewHolder) holder;
         final ShoppingItem currentItem = list.get(position);
         iHolder.itemContent.setText(currentItem.getItemName());
+
 
         iHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                removeItem(currentItem);
+                if (list.get(position).getChecked()) {
+                    list.get(position).setChecked(false);
+                } else list.get(position).setChecked(true);
+
+
+
             }
+
         });
 
     }
+
     @Override
     public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
         return new HeaderViewHolder(view);
     }
+
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
-        HeaderViewHolder hHolder = (HeaderViewHolder)holder;
+        HeaderViewHolder hHolder = (HeaderViewHolder) holder;
         hHolder.headerTitle.setText(title);
     }
 

@@ -26,7 +26,10 @@ import android.support.v7.widget.SearchView;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +48,9 @@ public class MyRecipes extends AppCompatActivity {
     public DrawerLayout mDrawerlayout;
     private ActionBarDrawerToggle mToggle;
     NavigationView navigation;
+    public Spinner spinner;
+    public String selectedCategory;
+    public String selectedIngredients;
 
     MyDBHandler db = new MyDBHandler(this);
 
@@ -87,7 +93,13 @@ public class MyRecipes extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                filter(s.toString());
+                Log.i("selected@TextChange", "selected category: " + selectedCategory);
+                if(s == null){
+                    filterCategory(selectedCategory);
+                } else
+                setString(s.toString());
+                filter(selectedIngredients, selectedCategory);
+
             }
         });
 
@@ -135,9 +147,39 @@ public class MyRecipes extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar
         getMenuInflater().inflate(R.menu.menuplus, menu);
+
+        MenuItem item = menu.findItem(R.id.spinner);
+        final Spinner spinner = (Spinner) item.getActionView();
+
+        // fill spinner with categories
+        MyDBHandler db = new MyDBHandler(getApplicationContext());
+        List<String> categories = db.getAllCategories();
+        categories.add(0, "All");
+
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, categories);
+
+        spinnerAdapter
+                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(spinnerAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String item = spinner.getSelectedItem().toString();
+                setSelectedCategory(item);
+                filter(selectedIngredients, item);
+                Log.i("selected", "selected category: " + item);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         return true;
     }
-
 
     public void onBackPressed() {
         if (mDrawerlayout.isDrawerOpen(GravityCompat.START)) {
@@ -165,6 +207,9 @@ public class MyRecipes extends AppCompatActivity {
                 Intent i = new Intent(this, NewRecipe.class);
                 this.startActivity(i);
                 return true;
+
+
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -186,9 +231,16 @@ public class MyRecipes extends AppCompatActivity {
         return true;
     }
 
-    private boolean filter(String text) {
+    private boolean filter(String text, String selectedCategory) {
+
+        if(text == null) {
+        filterCategory(selectedCategory);
+         return true;
+        }
         text = text.toLowerCase();
         String text2 = text.replaceAll("^[,\\s]+", "");
+
+        Log.i("selected@filter", "selected category: " + selectedCategory);
 
         // early return
         if (text2.isEmpty()) {
@@ -200,11 +252,11 @@ public class MyRecipes extends AppCompatActivity {
         List<String> inputList = Arrays.asList((text2.split("[,\\s]+")));
 
         // filter recipe ids
-        ArrayList<Integer> filteredRecipeId = db.getFilteredRecipes(inputList);
+        ArrayList<Integer> filteredRecipeId = db.getFilteredRecipes(inputList, selectedCategory);
         ArrayList<Recipe> newList = new ArrayList<>();
         System.out.println("Arraylist contains: " + filteredRecipeId.toString());
 
-        Log.i("filtered recipes: ", db.getFilteredRecipes(inputList).toString());
+
         for (Recipe recipe : listRecipe) {
             if (filteredRecipeId.contains(recipe.get_id())) {
                 newList.add(recipe);
@@ -215,6 +267,26 @@ public class MyRecipes extends AppCompatActivity {
         recyclerViewAdapter.filterList(newList);
         return true;
     }
+
+    private boolean filterCategory(String categoryName) {
+
+        if (categoryName == "All") {
+            recyclerViewAdapter.filterList(listRecipe);
+            return true;
+        }
+
+        ArrayList<Integer> filteredRecipesByCategory = db.getCategoryRecipes(categoryName);
+        ArrayList<Recipe> newList = new ArrayList<>();
+        for (Recipe recipe : listRecipe) {
+            if (filteredRecipesByCategory.contains(recipe.get_id())) {
+                newList.add(recipe);
+            }
+        }
+        Log.i("filtered by category recipes: ", newList.toString());
+        recyclerViewAdapter.filterList(newList);
+        return true;
+    }
+
 
     public void setNavView() {
         navigation = (NavigationView) findViewById(R.id.nav_view);
@@ -238,6 +310,17 @@ public class MyRecipes extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    public void setSelectedCategory(String selectedCategory) {
+        this.selectedCategory = selectedCategory;
+        Log.i("selected", "selected category: " + selectedCategory);
+    }
+
+    public void setString(String selectedIngredients) {
+        this.selectedIngredients = selectedIngredients;
+        Log.i("selected", "selected ingredients: " + selectedIngredients);
+
     }
 
 

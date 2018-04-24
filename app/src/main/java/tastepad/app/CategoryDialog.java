@@ -47,8 +47,19 @@ public class CategoryDialog extends AppCompatDialogFragment {
         myrecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
         myrecyclerview.setAdapter(recyclerAdapter);
 
+
         android.support.v7.app.AlertDialog.Builder builder =
                 new android.support.v7.app.AlertDialog.Builder(getActivity());
+
+        Bundle mArgs = getArguments();
+        String categoryStringList = mArgs.getString("categories");
+
+        for(Category category : lstCategory){
+            if(categoryStringList.toLowerCase().contains(category.getName())){
+                category.setChecked(true);
+            }
+            else category.setChecked(false);
+        }
 
         builder.setView(v)
                 .setTitle("Categories")
@@ -82,7 +93,6 @@ public class CategoryDialog extends AppCompatDialogFragment {
                             if (category.getChecked()) {
                                 lstCategoryChecked.add(category);
                             }
-
                         }
 
                         Log.i("categories", "checked: " + lstCategoryChecked);

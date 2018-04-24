@@ -97,7 +97,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         holder.textViewRecipeTitle.setText(listRecipe.get(position).getRecipename());
         float rating = db.getRating(listRecipe.get(position).get_id());
-        if(rating != 0.0f){
+        if (rating != 0.0f) {
             holder.ratingBar.setRating(rating);
         } else holder.ratingBar.setVisibility(RatingBar.INVISIBLE);
 
@@ -114,13 +114,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 int id = listRecipe.get(position).get_id();
                 Log.d("id", "clicked recipe id: " + id);
 
-                if (mActionmode != null)  {
+                if (mActionmode != null) {
                     mActionmode.finish();
                 }
 
                 MyDBHandler db = new MyDBHandler(mContext);
 
-                String [][] ingredients = db.getRecipeIngredients(id);
+                String[][] ingredients = db.getRecipeIngredients(id);
 
                 // passing title & instructions to RecipeActivity
                 Intent i = new Intent(mContext, RecipeActivity.class);
@@ -176,7 +176,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     db.deleteRecipe(getId());
                     db.close();
                     notifyItemRemoved(id);
-                    ((MyRecipes)mContext).finish();
+                    ((MyRecipes) mContext).finish();
                     Intent intent = new Intent(mContext, MyRecipes.class);
                     mContext.startActivity(intent);
                     return true;
@@ -196,11 +196,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return listRecipe.size();
     }
 
-        public void filterList(ArrayList<Recipe> filteredList)  {
+    public void filterList(ArrayList<Recipe> filteredList) {
+        this.filteredList = filteredList;
+        ArrayList<Recipe> List = new ArrayList<>();
+        for(Recipe recipe : filteredList){
+            if(listRecipe.contains(recipe)){
+                List.add(recipe);
+            }
+        }
+
         listRecipe = filteredList;
         notifyDataSetChanged();
     }
-
 
 
 }

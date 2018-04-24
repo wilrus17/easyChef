@@ -8,6 +8,7 @@ import android.content.ContentValues;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.sql.Array;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class MyDBHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "RecipesDB.db";
-    private static final int DATABASE_VERISON = 6;
+    private static final int DATABASE_VERISON = 7;
     public int id;
     Context mContext;
     MyDBHandler db;
@@ -42,9 +43,18 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     // recipe-ingredients table & columns
     public static final String TABLE_RECIPE_INGREDIENTS = "RecipeIngredients";
-
     public static final String INGREDIENT_QUANTITY = "ingredient_quantity";
     public static final String INGREDIENT_UNIT = "ingredient_unit";
+
+
+    // category table and columns
+    public static final String TABLE_CATEGORIES = "Categories";
+    public static final String CATEGORY_ID = "_category_id";
+    public static final String CATEGORY_NAME = "category_name";
+
+    // recipe-category table
+
+    public static final String TABLE_RECIPE_CATEGORIES = "RecipeCategories";
 
 
     // create table statements
@@ -54,8 +64,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
             RECIPE_NAME + " TEXT, " +
             RECIPE_INSTRUCTIONS + " TEXT, " +
             RECIPE_RATING + " FLOAT, " +
-            RECIPE_SERVINGS + " STRING, " +
-            RECIPE_CATEGORY + " STRING " +
+            RECIPE_SERVINGS + " TEXT, " +
+            RECIPE_CATEGORY + " TEXT " +
             ")";
 
     final String CREATE_TABLE_INGREDIENTS = "CREATE TABLE IF NOT EXISTS " +
@@ -75,9 +85,23 @@ public class MyDBHandler extends SQLiteOpenHelper {
             "FOREIGN KEY (" + INGREDIENT_ID + ") REFERENCES " + TABLE_INGREDIENTS + "(" + INGREDIENT_ID + ")" +
             ")";
 
+    final String CREATE_TABLE_CATEGORIES = "CREATE TABLE IF NOT EXISTS " +
+            TABLE_CATEGORIES + "(" +
+            CATEGORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            CATEGORY_NAME + " TEXT NOT NULL " +
+            ")";
+
+    final String CREATE_TABLE_RECIPE_CATEGORIES = "CREATE TABLE IF NOT EXISTS " +
+            TABLE_RECIPE_CATEGORIES + "(" +
+            RECIPE_ID + " INTEGER NOT NULL, " +
+            CATEGORY_ID + " INTEGER NOT NULL, " +
+            "PRIMARY KEY (" + RECIPE_ID + "," + CATEGORY_ID + "), " +
+            "FOREIGN KEY (" + RECIPE_ID + ") REFERENCES " + TABLE_RECIPES + "(" + RECIPE_ID + "), " +
+            "FOREIGN KEY (" + CATEGORY_ID + ") REFERENCES " + TABLE_CATEGORIES + "(" + CATEGORY_ID + ")" +
+            ")";
 
     public MyDBHandler(Context context) {
-        super(context, DATABASE_NAME, null, 6);
+        super(context, DATABASE_NAME, null, DATABASE_VERISON);
     }
 
     @Override
@@ -87,6 +111,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_RECIPES);
         db.execSQL(CREATE_TABLE_INGREDIENTS);
         db.execSQL(CREATE_TABLE_RECIPE_INGREDIENTS);
+        db.execSQL(CREATE_TABLE_CATEGORIES);
+        db.execSQL(CREATE_TABLE_RECIPE_CATEGORIES);
 
     }
 
@@ -99,6 +125,27 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
         // create new tables
         onCreate(db);
+    }
+
+    public void createCategory(Category category) {
+        ContentValues values = new ContentValues();
+        values.put(CATEGORY_NAME, category.getName());
+
+        Log.i("Categories", "created category in table: " + category.getName());
+        SQLiteDatabase db = getWritableDatabase();
+        db.insert(TABLE_CATEGORIES, null, values);
+        db.close();
+    }
+
+    public void createRecipesCategories(RecipeCategories recipeCategories) {
+        ContentValues values = new ContentValues();
+        values.put(RECIPE_ID, recipeCategories.getRecipe_id());
+        values.put(CATEGORY_ID, recipeCategories.getCategory_id());
+
+        Log.i("Categories", "created recipesCategories in link table: " + recipeCategories.getCategory_id());
+        SQLiteDatabase db = getWritableDatabase();
+        db.insert(TABLE_RECIPE_CATEGORIES, null, values);
+        db.close();
     }
 
 
@@ -185,7 +232,24 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    // get ingredient Id if name exists, otherwise
+    // get category Id if name exists
+    public int checkCategoryExist(String categoryName) {
+
+        String getCategoryId = "SELECT " + CATEGORY_ID +
+                " FROM " + TABLE_CATEGORIES +
+                " WHERE " + CATEGORY_NAME + " IN " + "('" + categoryName + "')";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(getCategoryId, null);
+        if (c != null && c.moveToFirst()) {
+            int categoryId = c.getInt(0);
+            return categoryId;
+        }
+        return -1;
+    }
+
+
+    // get ingredient Id if name exists
     public int checkIngredientExist(String ingredientName) {
 
         String getIngredientId = "SELECT " + INGREDIENT_ID +
@@ -235,6 +299,20 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     }
 
+    // ingredientId that was just added
+    public int getLastCategoryId() {
+        int lastCategoryId = 0;
+        String query = "SELECT " + CATEGORY_ID + " FROM " + TABLE_CATEGORIES + " ORDER BY " +
+                CATEGORY_ID + " DESC limit 1";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(query, null);
+        if (c != null && c.moveToFirst()) {
+            lastCategoryId = c.getInt(0);
+            return lastCategoryId;
+        }
+        return lastCategoryId;
+    }
+
     // recipeId that was just added
     public int getLastRecipeId() {
         int lastRecipeId = 0;
@@ -264,9 +342,60 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return lastIngredientId;
     }
 
-    // return list of recipes that use inputList ingredients
-    public ArrayList<Integer> getFilteredRecipes(List<String> inputList) {
+    public List<String> getAllCategories() {
+        List<String> categories = new ArrayList<String>();
 
+        String selectQuery = "SELECT " + CATEGORY_NAME + " FROM " + TABLE_CATEGORIES;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            do {
+                categories.add(cursor.getString(0));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        return categories;
+    }
+
+    public ArrayList<Integer> getCategoryRecipes(String category){
+
+        String GET_CATEGORY_RECIPES =
+                "SELECT " + RECIPE_ID +
+                        " FROM " + TABLE_RECIPE_CATEGORIES +
+                        " INNER JOIN " + TABLE_CATEGORIES +
+                        " ON " + TABLE_RECIPE_CATEGORIES + "." + CATEGORY_ID + "=" + TABLE_CATEGORIES + "." + CATEGORY_ID +
+                        " WHERE " + TABLE_CATEGORIES + "." + CATEGORY_NAME + "=" + "('" + category + "')" +
+                        " GROUP BY " + RECIPE_ID;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(GET_CATEGORY_RECIPES, null);
+        int x = c.getCount();
+        ArrayList<Integer> list = new ArrayList<>();
+
+        int i = 0;
+        while (c.moveToNext()){
+            int recipeId = c.getInt(c.getColumnIndex(RECIPE_ID));
+            list.add(recipeId);
+            i++;
+
+            Log.i("RecipesInCategory", "Recipes in seleted category: " + list.toString());
+        }
+        c.close();
+        return  list;
+    }
+
+
+    // return list of recipes that use inputList ingredients
+    public ArrayList<Integer> getFilteredRecipes(List<String> inputList, String selectedCategory) {
+
+        // List of Recipe Id's for selected category
+        ArrayList<Integer> categoryRecipes = new ArrayList<>();
+        categoryRecipes = getCategoryRecipes(selectedCategory);
+
+        Log.i("selected@db", "selected category: " + selectedCategory);
         String formatted = TextUtils.join("', '", inputList);
         int listSize = inputList.size();
 
@@ -285,13 +414,12 @@ public class MyDBHandler extends SQLiteOpenHelper {
         ArrayList<Integer> list = new ArrayList<Integer>();
 
         // put each row into list
-        int i = 0;
+
         while (c.moveToNext()) {
             int recipeId = c.getInt(c.getColumnIndex(RECIPE_ID));
-            list.add(recipeId);
-            i++;
-
-            Log.i("ingredientsRe", list.toString());
+            if(categoryRecipes.contains(recipeId) || selectedCategory == "All"){
+                list.add(recipeId);
+            }
         }
         c.close();
         return list;
@@ -319,7 +447,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(GET_RATING, null);
         Log.i("CHECK", "getRating: " + db.rawQuery(GET_RATING, null));
         c.moveToFirst();
-        float rating =  c.getFloat(0);
+        float rating = c.getFloat(0);
         Log.i("ratingGet", "gotRating: " + rating);
         return rating;
     }

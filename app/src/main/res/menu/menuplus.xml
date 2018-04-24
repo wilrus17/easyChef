@@ -2,6 +2,14 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/spinner"
+        android:title="ActionBar Spinner"
+        app:actionViewClass="android.widget.Spinner"
+        android:background="#ff00"
+        app:showAsAction="always" />
+
     <item
         android:title="addRecipe"
         android:id="@+id/plus_button"

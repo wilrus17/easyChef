@@ -70,13 +70,12 @@ public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFra
         servings = (EditText) findViewById(R.id.servings);
 
 
-
-
         LinearLayout category = (LinearLayout) findViewById(R.id.categoryLayout);
         category.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 openDialog();
+
 
             }
         });
@@ -140,10 +139,35 @@ public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFra
                     recipe.setRecipename(recipeTitle.getText().toString());
                     recipe.setInstructions(instructions.getText().toString());
                     recipe.setServings(servings.getText().toString());
-                    recipe.setCategories(checkedCategories);
 
                     Log.i("Servings", "createRecipe: " + servings.getText().toString());
+
                     db.createRecipe(recipe);
+                    int recipeId = db.getLastRecipeId();
+
+                    // save each categories to category table and link table
+                    if(checkedCategories != null) {
+                        for (Category category : checkedCategories) {
+
+                            // if category name exists in table, get ID for that category
+                            // else, create new category get the last added id
+                            int categoryId;
+                            if (db.checkCategoryExist(category.getName()) != -1) {
+                                categoryId = db.checkCategoryExist(category.getName());
+                            } else {
+                                Category c = new Category();
+                                c.setName(category.getName());
+                                db.createCategory(category);
+                                categoryId = db.getLastCategoryId();
+                            }
+
+                            RecipeCategories recipeCategories = new RecipeCategories();
+                            recipeCategories.setCategory_id(categoryId);
+                            recipeCategories.setRecipe_id(recipeId);
+                            db.createRecipesCategories(recipeCategories);
+                        }
+                    }
+
 
                     // identify each ingredient, quantity, unit
                     ViewGroup viewGroup = (ViewGroup) container;
@@ -174,7 +198,6 @@ public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFra
                         }
 
                         // recipe id, ingredient id, quantity, unit to Recipe_Ingredients Link table
-                        int recipeId = db.getLastRecipeId();
 
                         Log.d("ids", "value: " + recipeId);
                         Log.d("ids", "value: " + ingredientId);
@@ -185,10 +208,7 @@ public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFra
                         recipeIngredients.setQuantity(ingredientQuantity);
                         recipeIngredients.setUnit(ingredientUnit);
                         db.createRecipesIngredients(recipeIngredients);
-                        Log.d("created id", "value: " + ingredientId);
-                        Log.d("created", "value: " + ingredientId);
-                        Log.d("ids", "value: " + ingredientId);
-                        Log.d("ids", "value: " + ingredientId);
+
                     }
 
                     // recipe creation confirmation
@@ -200,11 +220,13 @@ public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFra
             }
 
         });
-
     }
 
     public void openDialog() {
+        Bundle args= new Bundle();
+        args.putString("categories", tv_categories.getText().toString());
         CategoryDialog categoryDialog = new CategoryDialog();
+        categoryDialog.setArguments(args);
         categoryDialog.show(getSupportFragmentManager(), "category dialog");
     }
 
@@ -213,7 +235,6 @@ public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFra
         onBackPressed();
         return true;
     }
-
 
     @Override
     public void onFragmentSetCategories(final ArrayList<Category> categories) {
@@ -226,9 +247,8 @@ public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFra
         StringBuilder listString = new StringBuilder();
 
         for (String s : categoryList)
-            listString.append(s+" ");
+            listString.append(s + " ");
         tv_categories.setText(listString);
-
 
 
     }

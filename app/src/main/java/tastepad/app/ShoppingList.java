@@ -128,6 +128,7 @@ public class ShoppingList extends AppCompatActivity {
     // add item to top section
     public void insertItem(String ingredient) {
 
+
         sectionAdapter.notifyDataSetChanged();
     }
 
