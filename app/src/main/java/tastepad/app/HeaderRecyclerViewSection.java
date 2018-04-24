@@ -2,6 +2,7 @@ package tastepad.app;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -50,20 +51,22 @@ public class HeaderRecyclerViewSection extends StatelessSection {
         final ItemViewHolder iHolder = (ItemViewHolder) holder;
         final ShoppingItem currentItem = list.get(position);
         iHolder.itemContent.setText(currentItem.getItemName());
+        iHolder.checkBox.setChecked(currentItem.getChecked());
 
-
-        iHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        iHolder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onClick(View v) {
+                Log.i("checkbox", "checked was: " + list.get(position).getChecked());
                 if (list.get(position).getChecked()) {
                     list.get(position).setChecked(false);
+
                 } else list.get(position).setChecked(true);
 
-
-
+                ShoppingList.moveItem(currentItem);
+                list.remove(currentItem);
             }
-
         });
+        
 
     }
 

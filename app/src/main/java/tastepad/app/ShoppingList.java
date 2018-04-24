@@ -30,15 +30,20 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 public class ShoppingList extends AppCompatActivity {
+
+
 
     public DrawerLayout mDrawerlayout;
     private ActionBarDrawerToggle mToggle;
@@ -56,12 +61,13 @@ public class ShoppingList extends AppCompatActivity {
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String ITEM = "item";
     private RecyclerView sectionHeader;
-    public SectionedRecyclerViewAdapter sectionAdapter;
-    HeaderRecyclerViewSection firstSection = new HeaderRecyclerViewSection("Unchecked", getDataSource());
-    HeaderRecyclerViewSection secondSection = new HeaderRecyclerViewSection("Checked", getDataSource());
+    public static SectionedRecyclerViewAdapter sectionAdapter;
+    static HeaderRecyclerViewSection firstSection = new HeaderRecyclerViewSection("Unchecked", getDataSource());
+    static HeaderRecyclerViewSection secondSection = new HeaderRecyclerViewSection("Checked", getDataSource());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
 
 
         super.onCreate(savedInstanceState);
@@ -94,7 +100,7 @@ public class ShoppingList extends AppCompatActivity {
         sectionAdapter.addSection(secondSection);
         sectionHeader.setAdapter(sectionAdapter);
 
-        loadData();
+        //loadData();
         // buildRecyclerView();
 
         editTextInsert = (EditText) findViewById(R.id.newItem);
@@ -112,7 +118,12 @@ public class ShoppingList extends AppCompatActivity {
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     if (keyCode == KeyEvent.KEYCODE_ENTER) {
                         String ingredient = editTextInsert.getText().toString();
-                        insertItem(ingredient);
+
+                        ShoppingItem item = new ShoppingItem(ingredient);
+                        item.setChecked(false);
+                        firstSection.addItem(item);
+                        sectionAdapter.notifyDataSetChanged();
+
                         Toast.makeText(getApplicationContext(), ingredient + " added", Toast.LENGTH_SHORT).show();
                         saveData();
                         editTextInsert.setText("");
@@ -125,15 +136,18 @@ public class ShoppingList extends AppCompatActivity {
     }
 
 
-    // add item to top section
-    public void insertItem(String ingredient) {
 
-
+    public static void moveItem(ShoppingItem item) {
+        if (item.getChecked()) {
+            secondSection.addItem(item);
+            } else {
+           firstSection.addItem(item);
+           }
         sectionAdapter.notifyDataSetChanged();
+
     }
 
-    public void deleteItem(ShoppingItem shoppingItem) {
-        firstSection.removeItem(shoppingItem);
+    public static void deleteItem() {
         sectionAdapter.notifyDataSetChanged();
     }
 
@@ -142,26 +156,29 @@ public class ShoppingList extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(firstSection.list);
+        String json = gson.toJson(firstSection);
         Log.i("JSON", "saveData: " + json);
         editor.putString("shopping list", json);
         editor.apply();
     }
 
     // load from shared preferences
+
+    /*
     public void loadData() {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
         List<ShoppingItem> list = new ArrayList<>();
         String json = sharedPreferences.getString("shopping list", null);
-        Log.i("JSON2", "loadData: " + json);
         Type type = new TypeToken<List<ShoppingItem>>() {}.getType();
-        firstSection.list.addAll((List<ShoppingItem>) gson.fromJson(json, type));
+        list = gson.fromJson(json, type);
+        list.addAll((List<ShoppingItem>) gson.fromJson(json, type));
+
 
         if(firstSection.list == null) {
             firstSection.list = new ArrayList<>();
         }
-    }
+    } */
 
     public void onBackPressed() {
         if (mDrawerlayout.isDrawerOpen(GravityCompat.START)) {
@@ -208,10 +225,11 @@ public class ShoppingList extends AppCompatActivity {
         });
     }
 
-    private List<ShoppingItem> getDataSource() {
+    private static List<ShoppingItem> getDataSource() {
         List<ShoppingItem> data = new ArrayList<ShoppingItem>();
         return data;
     }
+
 
 }
 

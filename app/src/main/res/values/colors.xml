@@ -30,5 +30,6 @@
     <color name="navy">#000080</color>
     <color name="black">#000000</color>
     <color name="darkgrey">#6c6c6c</color>
+    <color name="saveButton">#3daeff</color>
 
 </resources>
