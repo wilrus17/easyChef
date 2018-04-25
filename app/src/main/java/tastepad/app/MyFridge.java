@@ -3,6 +3,7 @@ package tastepad.app;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.GravityCompat;
@@ -14,6 +15,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,18 +26,24 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.w3c.dom.Text;
 
+import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class MyFridge extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+public class MyFridge extends AppCompatActivity implements Serializable {
 
-    private ArrayList<fridgeItem> mFridgeList;
+    public static ArrayList<PantryItem> mPantryList;
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    public static RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     public DrawerLayout mDrawerlayout;
     private ActionBarDrawerToggle mToggle;
@@ -44,6 +52,7 @@ public class MyFridge extends AppCompatActivity implements DatePickerDialog.OnDa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_fridge);
+
 
         // set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
@@ -60,13 +69,12 @@ public class MyFridge extends AppCompatActivity implements DatePickerDialog.OnDa
         mToggle.syncState();
         setNavView();
 
-        createFridgeList();
+
+        createPantryList();
         buildRecyclerView();
+        loadData();
 
         final EditText itemName = (EditText) findViewById(R.id.newItem);
-        //final TextView itemDate = (TextView) findViewById(R.id.dateText);
-
-
 
 
         // add item
@@ -76,51 +84,44 @@ public class MyFridge extends AppCompatActivity implements DatePickerDialog.OnDa
             @Override
             public void onClick(View v) {
                 String item = itemName.getText().toString();
-                //String date = itemDate.getText().toString();
-                // insertItem(item, date);
+                insertItem(item);
             }
         });
     }
 
 
-    public void createFridgeList() {
-        mFridgeList = new ArrayList<>();
-        mFridgeList.add(new fridgeItem("name", "date"));
+    // creates pantry items sent from shopping list
+    public void createPantryList() {
+        mPantryList = new ArrayList<>();
+        ArrayList<String> toPantryList = HeaderRecyclerViewSection.toPantryList;
+        if(toPantryList!= null) {
+            for (String itemName : toPantryList) {
+                PantryItem pantryItem = new PantryItem();
+                pantryItem.setName(itemName);
+                mPantryList.add(pantryItem);
+                toPantryList.remove(itemName);
+            }
+        }
     }
 
     public void buildRecyclerView() {
         mRecyclerView = findViewById(R.id.inventory_View);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new RecyclerFridgeAdapter(mFridgeList);
+        mAdapter = new RecyclerFridgeAdapter(mPantryList);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    // add item to inventory list
-    public void insertItem(String name, String date) {
-        mFridgeList.add(new fridgeItem(name, date));
+    // add item to pantry
+    public static void insertItem(String name) {
+        Log.i("pantry", "inserting item: " + name);
+        mPantryList.add(new PantryItem(name));
         mAdapter.notifyDataSetChanged();
     }
 
-    // remove item from inventory list
-    public void removeItem(int position) {
-        mFridgeList.remove(position);
-        mAdapter.notifyItemRemoved(position);
-    }
 
-    @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.YEAR, year);
-        c.set(Calendar.MONTH, month);
-        c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        String currentDateString = DateFormat.getDateInstance().format(c.getTime());
-
-        //TextView textView = (TextView) findViewById(R.id.dateText);
-        //textView.setText(currentDateString);
-    }
 
     public void onBackPressed() {
         if (mDrawerlayout.isDrawerOpen(GravityCompat.START)) {
@@ -151,6 +152,7 @@ public class MyFridge extends AppCompatActivity implements DatePickerDialog.OnDa
                 int id = menuItem.getItemId();
                 switch (id) {
                     case R.id.sList:
+                        saveData();
                         Intent i = new Intent(MyFridge.this, ShoppingList.class);
                         startActivity(i);
                         break;
@@ -158,6 +160,7 @@ public class MyFridge extends AppCompatActivity implements DatePickerDialog.OnDa
                         mDrawerlayout.closeDrawers();
                         break;
                     case R.id.recipes:
+                        saveData();
                         Intent x = new Intent(MyFridge.this, MyRecipes.class);
                         startActivity(x);
                         break;
@@ -166,6 +169,42 @@ public class MyFridge extends AppCompatActivity implements DatePickerDialog.OnDa
             }
         });
     }
+
+    // save to shared preferences
+    public void saveData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(mPantryList);
+        Log.i("JSON", "saveData: " + json);
+        editor.putString("pantry list", json);
+        editor.apply();
+    }
+
+    // load from shared preferences
+
+
+    public boolean loadData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("pantry list", null);
+        Type type = new TypeToken<ArrayList<PantryItem>>() {
+        }.getType();
+        Log.i("JSON", "loadData: " + json);
+        // put data into new list, if item is checked add to list
+        ArrayList<PantryItem> list = new ArrayList<>();
+        if(json != null) {
+            list.addAll((ArrayList<PantryItem>) gson.fromJson(json, type));
+            mPantryList.addAll(list);
+            return true;
+        } else {
+            return true;
+        }
+
+    }
+
+
+
 }
 
 

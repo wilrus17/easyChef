@@ -97,6 +97,7 @@ public class ShoppingList extends AppCompatActivity {
         sectionAdapter.addSection(secondSection);
         sectionHeader.setAdapter(sectionAdapter);
 
+
         loadData();
 
         editTextInsert = (EditText) findViewById(R.id.newItem);
@@ -140,6 +141,10 @@ public class ShoppingList extends AppCompatActivity {
         sectionAdapter.notifyDataSetChanged();
     }
 
+    public static void notifyAdapter() {
+        sectionAdapter.notifyDataSetChanged();
+    }
+
     public static void deleteItem() {
         sectionAdapter.notifyDataSetChanged();
     }
@@ -159,7 +164,6 @@ public class ShoppingList extends AppCompatActivity {
 
     // load from shared preferences
 
-
     public void loadData() {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
@@ -168,14 +172,16 @@ public class ShoppingList extends AppCompatActivity {
         }.getType();
         // put data into new list, if item is checked add to list
         ArrayList<ShoppingItem> list = new ArrayList<>();
-        list.addAll((List<ShoppingItem>) gson.fromJson(json, type));
-        for(ShoppingItem item : list){
-            if (item.getChecked()){
-                firstSection.list.add(item);
+        if (list.isEmpty()) {
+
+        } else {
+            list.addAll((List<ShoppingItem>) gson.fromJson(json, type));
+            for (ShoppingItem item : list) {
+                if (item.getChecked()) {
+                    firstSection.list.add(item);
+                }
             }
         }
-
-
     }
 
     public void onBackPressed() {

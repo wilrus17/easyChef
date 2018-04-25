@@ -38,7 +38,6 @@
             android:id="@+id/deleteItem"
             android:layout_width="45dp"
             android:layout_height="wrap_content"
-
             android:layout_toRightOf="@id/textView1"
             android:background="@drawable/clear_icon" />
 

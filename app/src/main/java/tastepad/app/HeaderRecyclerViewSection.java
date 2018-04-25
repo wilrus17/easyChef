@@ -1,13 +1,18 @@
 package tastepad.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
@@ -17,15 +22,20 @@ public class HeaderRecyclerViewSection extends StatelessSection {
     private static final String TAG = HeaderRecyclerViewSection.class.getSimpleName();
     private String title;
     public List<ShoppingItem> list;
-    Context context;
+    public Context context;
+    public static ArrayList<String> toPantryList;
 
     public HeaderRecyclerViewSection(String title, List<ShoppingItem> list) {
+
+
         super(SectionParameters.builder()
                 .itemResourceId(R.layout.shopping_item)
                 .headerResourceId(R.layout.section_header)
                 .build());
         this.title = title;
         this.list = list;
+
+
     }
 
     @Override
@@ -82,6 +92,48 @@ public class HeaderRecyclerViewSection extends StatelessSection {
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
         HeaderViewHolder hHolder = (HeaderViewHolder) holder;
         hHolder.headerTitle.setText(title);
+
+        ViewGroup layout = (ViewGroup) hHolder.clear.getParent();
+
+        if (title.equals("Unchecked")) {
+            hHolder.clear.setVisibility(View.GONE);
+            hHolder.toPantry.setVisibility(View.GONE);
+        }
+
+        // clear checked items
+        hHolder.clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (ShoppingItem item : list) {
+                    if (item.getChecked()) {
+                        list.remove(item);
+                        ShoppingList.notifyAdapter();
+                    }
+                }
+
+            }
+        });
+
+        // send checked item names to pantry
+        hHolder.toPantry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<String> pantryItemNames = new ArrayList<>();
+                for (ShoppingItem item : list) {
+                    if (item.getChecked()) {
+                        String pantryItemName = item.getItemName();
+                        pantryItemNames.add(pantryItemName);
+                    }
+                }
+                toPantryList = pantryItemNames;
+                Log.i("PANTRY", "Items ready to go to Pantry: " + toPantryList);
+                if (toPantryList != null) {
+                    Toast.makeText(v.getContext(), "Sent " + toPantryList.size() + " items(s) to the Pantry",
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
     }
 
 }

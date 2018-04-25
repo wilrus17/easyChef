@@ -1,7 +1,9 @@
 package tastepad.app;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,6 +16,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
@@ -35,6 +39,7 @@ public class CategoryDialog extends AppCompatDialogFragment {
     private ArrayList<Category> lstCategory;
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String ITEM = "item";
+    private Context context;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -51,15 +56,16 @@ public class CategoryDialog extends AppCompatDialogFragment {
         android.support.v7.app.AlertDialog.Builder builder =
                 new android.support.v7.app.AlertDialog.Builder(getActivity());
 
+
         Bundle mArgs = getArguments();
         String categoryStringList = mArgs.getString("categories");
 
-        for(Category category : lstCategory){
-            if(categoryStringList.toLowerCase().contains(category.getName())){
+        for (Category category : lstCategory) {
+            if (categoryStringList.toLowerCase().contains(category.getName())) {
                 category.setChecked(true);
-            }
-            else category.setChecked(false);
+            } else category.setChecked(false);
         }
+
 
         builder.setView(v)
                 .setTitle("Categories")
@@ -76,6 +82,7 @@ public class CategoryDialog extends AppCompatDialogFragment {
                         EditText tv_category = (EditText) v.findViewById(R.id.editText_category);
                         String new_category = tv_category.getText().toString();
                         CheckBox checkBoxNewCategory = (CheckBox) v.findViewById(R.id.checkBoxNewCategory);
+
 
                         Log.i("newcategory", "typed category =:" + new_category);
 
@@ -100,20 +107,23 @@ public class CategoryDialog extends AppCompatDialogFragment {
                         listener.onFragmentSetCategories(lstCategoryChecked);
 
                         saveData();
+
                     }
                 });
-        return builder.create();
+        Dialog d = builder.create();
+        d.show();
+        d.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        return d;
+
+
+
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         lstCategory = new ArrayList<>();
-        lstCategory.add(new Category("Other"));
-        lstCategory.add(new Category("Starter"));
-        lstCategory.add(new Category("Main Course"));
-        lstCategory.add(new Category("Desert"));
+
     }
 
     private void saveData() {
@@ -144,5 +154,4 @@ public class CategoryDialog extends AppCompatDialogFragment {
     }
 
 
-    // interface to pass the checkbox data strings to setText category and
 }

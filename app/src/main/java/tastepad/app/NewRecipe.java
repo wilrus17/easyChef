@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -75,8 +76,6 @@ public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFra
             @Override
             public void onClick(View v) {
                 openDialog();
-
-
             }
         });
 
@@ -146,7 +145,7 @@ public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFra
                     int recipeId = db.getLastRecipeId();
 
                     // save each categories to category table and link table
-                    if(checkedCategories != null) {
+                    if (checkedCategories != null) {
                         for (Category category : checkedCategories) {
 
                             // if category name exists in table, get ID for that category
@@ -223,11 +222,14 @@ public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFra
     }
 
     public void openDialog() {
-        Bundle args= new Bundle();
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        Bundle args = new Bundle();
         args.putString("categories", tv_categories.getText().toString());
         CategoryDialog categoryDialog = new CategoryDialog();
         categoryDialog.setArguments(args);
         categoryDialog.show(getSupportFragmentManager(), "category dialog");
+
     }
 
     @Override
