@@ -97,7 +97,6 @@ public class ShoppingList extends AppCompatActivity {
         sectionAdapter.addSection(secondSection);
         sectionHeader.setAdapter(sectionAdapter);
 
-
         loadData();
 
         editTextInsert = (EditText) findViewById(R.id.newItem);

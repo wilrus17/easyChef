@@ -27,15 +27,12 @@ public class HeaderRecyclerViewSection extends StatelessSection {
 
     public HeaderRecyclerViewSection(String title, List<ShoppingItem> list) {
 
-
         super(SectionParameters.builder()
                 .itemResourceId(R.layout.shopping_item)
                 .headerResourceId(R.layout.section_header)
                 .build());
         this.title = title;
         this.list = list;
-
-
     }
 
     @Override
@@ -76,15 +73,12 @@ public class HeaderRecyclerViewSection extends StatelessSection {
                 // add item to other section, remove from current
                 ShoppingList.moveItem(currentItem);
                 list.remove(currentItem);
-
             }
         });
-
-
     }
 
     @Override
-    public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
+    public RecyclerView.ViewHolder getHeaderViewHolder(View view)    {
         return new HeaderViewHolder(view);
     }
 

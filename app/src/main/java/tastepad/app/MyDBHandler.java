@@ -34,7 +34,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public static final String RECIPE_INSTRUCTIONS = "instructions";
     public static final String RECIPE_RATING = "rating";
     public static final String RECIPE_SERVINGS = "servings";
-    public static final String RECIPE_CATEGORY = "categories";
+
 
     // ingredients table & columns
     public static final String TABLE_INGREDIENTS = "Ingredients";
@@ -65,7 +65,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
             RECIPE_INSTRUCTIONS + " TEXT, " +
             RECIPE_RATING + " FLOAT, " +
             RECIPE_SERVINGS + " TEXT, " +
-            RECIPE_CATEGORY + " TEXT " +
             ")";
 
     final String CREATE_TABLE_INGREDIENTS = "CREATE TABLE IF NOT EXISTS " +

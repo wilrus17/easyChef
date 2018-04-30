@@ -71,11 +71,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public MyViewHolder(View view) {
             super(view);
             this.view = view;
-            CardView cardView;
 
             textViewRecipeTitle = (AppCompatTextView) itemView.findViewById(R.id.recipe_title);
             img_RecipeThumbnail = (ImageView) itemView.findViewById(R.id.recipe_img);
-            cardView = (CardView) itemView.findViewById(R.id.cardView);
             ratingBar = (RatingBar) itemView.findViewById(R.id.ratingBarCard);
 
         }
