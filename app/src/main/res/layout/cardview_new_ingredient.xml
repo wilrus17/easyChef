@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditText
+        android:id="@+id/new_ingredient_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="New Ingredient"
+        android:layout_weight="0.6"
+        android:inputType="text"
+        android:imeOptions="actionNext"/>
+    <EditText
+        android:id="@+id/new_ingredient_quantity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="Quantity"
+        android:layout_weight="0.9"
+        android:inputType="numberDecimal|numberSigned"
+        android:imeOptions="actionNext"
+        />
+     <Spinner
+         android:id="@+id/new_ingredient_unit"
+         style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+         android:layout_width="95dp"
+         android:layout_height="wrap_content"
+         android:layout_gravity="bottom"
+         android:entries="@array/units_array"
+         android:imeOptions="actionNext">
+
+     </Spinner>
+
+        <Button
+            android:id="@+id/remove"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/clear_icon"
+            android:layout_marginLeft="5dp">
+
+        </Button>
+    </LinearLayout>
