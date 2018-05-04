@@ -129,6 +129,27 @@ public class ShoppingList extends AppCompatActivity {
                 return false;
             }
         });
+
+        // add item
+        Button addItemButton = (Button) findViewById(R.id.newItemShopping);
+        addItemButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String ingredient = editTextInsert.getText().toString();
+
+                ShoppingItem item = new ShoppingItem(ingredient);
+                item.setChecked(false);
+                firstSection.addItem(item);
+                sectionAdapter.notifyDataSetChanged();
+
+                Toast.makeText(getApplicationContext(), ingredient + " added", Toast.LENGTH_SHORT).show();
+
+                editTextInsert.setText("");
+            }
+        });
+
+
     }
 
     public static void moveItem(ShoppingItem item) {
@@ -152,7 +173,7 @@ public class ShoppingList extends AppCompatActivity {
     public void saveData() {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
+
         Gson gson = new Gson();
         List<ShoppingItem> newList = new ArrayList<ShoppingItem>();
         newList.addAll(firstSection.list);
@@ -179,12 +200,13 @@ public class ShoppingList extends AppCompatActivity {
         }.getType();
         // put data into new list, if item is checked add to list
         ArrayList<ShoppingItem> list = new ArrayList<>();
-        list.addAll((List<ShoppingItem>) gson.fromJson(json, type));
-
-        for (ShoppingItem item : list) {
-            if (item.getChecked()) {
-                secondSection.list.add(item);
-            } else firstSection.list.add(item);
+        if (json != null) {
+            list.addAll((List<ShoppingItem>) gson.fromJson(json, type));
+            for (ShoppingItem item : list) {
+                if (item.getChecked()) {
+                    secondSection.list.add(item);
+                } else firstSection.list.add(item);
+            }
         }
     }
 
@@ -221,10 +243,12 @@ public class ShoppingList extends AppCompatActivity {
                         mDrawerlayout.closeDrawers();
                         break;
                     case R.id.pantry:
+                        saveData();
                         Intent i = new Intent(ShoppingList.this, MyFridge.class);
                         startActivity(i);
                         break;
                     case R.id.recipes:
+                        saveData();
                         Intent x = new Intent(ShoppingList.this, MyRecipes.class);
                         startActivity(x);
                         break;

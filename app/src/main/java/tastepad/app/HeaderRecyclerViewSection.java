@@ -25,6 +25,7 @@ public class HeaderRecyclerViewSection extends StatelessSection {
     public Context context;
     public static ArrayList<String> toPantryList;
 
+
     public HeaderRecyclerViewSection(String title, List<ShoppingItem> list) {
 
         super(SectionParameters.builder()
@@ -57,8 +58,16 @@ public class HeaderRecyclerViewSection extends StatelessSection {
     public void onBindItemViewHolder(RecyclerView.ViewHolder holder, final int position) {
         final ItemViewHolder iHolder = (ItemViewHolder) holder;
         final ShoppingItem currentItem = list.get(position);
+
         iHolder.itemContent.setText(currentItem.getItemName());
         iHolder.checkBox.setChecked(currentItem.getChecked());
+        iHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                list.remove(currentItem);
+                ShoppingList.notifyAdapter();
+            }
+        });
 
         // onclick checkbox, toggle checked<->unchecked
         iHolder.checkBox.setOnClickListener(new View.OnClickListener() {

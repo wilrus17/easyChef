@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,7 +54,6 @@ public class MyFridge extends AppCompatActivity implements Serializable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_fridge);
 
-
         // set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
@@ -69,13 +69,11 @@ public class MyFridge extends AppCompatActivity implements Serializable {
         mToggle.syncState();
         setNavView();
 
-
         createPantryList();
         buildRecyclerView();
         loadData();
 
         final EditText itemName = (EditText) findViewById(R.id.newItem);
-
 
         // add item
         Button addItemButton = (Button) findViewById(R.id.newItemFridge);
@@ -85,10 +83,27 @@ public class MyFridge extends AppCompatActivity implements Serializable {
             public void onClick(View v) {
                 String item = itemName.getText().toString();
                 insertItem(item);
+                itemName.setText("");
             }
         });
-    }
 
+        // add item on enter key press
+        itemName.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                        String item = itemName.getText().toString();
+                        insertItem(item);
+                        itemName.setText("");
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+    }
 
     // creates pantry items sent from shopping list
     public void createPantryList() {
@@ -121,8 +136,6 @@ public class MyFridge extends AppCompatActivity implements Serializable {
         mAdapter.notifyDataSetChanged();
     }
 
-
-
     public void onBackPressed() {
         if (mDrawerlayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerlayout.closeDrawer(GravityCompat.START);
@@ -152,7 +165,6 @@ public class MyFridge extends AppCompatActivity implements Serializable {
                 int id = menuItem.getItemId();
                 switch (id) {
                     case R.id.sList:
-                        saveData();
                         Intent i = new Intent(MyFridge.this, ShoppingList.class);
                         startActivity(i);
                         break;
@@ -160,7 +172,6 @@ public class MyFridge extends AppCompatActivity implements Serializable {
                         mDrawerlayout.closeDrawers();
                         break;
                     case R.id.recipes:
-                        saveData();
                         Intent x = new Intent(MyFridge.this, MyRecipes.class);
                         startActivity(x);
                         break;
@@ -172,8 +183,9 @@ public class MyFridge extends AppCompatActivity implements Serializable {
 
     // save to shared preferences
     public void saveData() {
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        SharedPreferences sharedPreferences1 = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences1.edit();
+
         Gson gson = new Gson();
         String json = gson.toJson(mPantryList);
         Log.i("JSON", "saveData: " + json);
@@ -183,11 +195,10 @@ public class MyFridge extends AppCompatActivity implements Serializable {
 
     // load from shared preferences
 
-
     public boolean loadData() {
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences sharedPreferences1 = getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = sharedPreferences.getString("pantry list", null);
+        String json = sharedPreferences1.getString("pantry list", null);
         Type type = new TypeToken<ArrayList<PantryItem>>() {
         }.getType();
         Log.i("JSON", "loadData: " + json);
@@ -200,11 +211,13 @@ public class MyFridge extends AppCompatActivity implements Serializable {
         } else {
             return true;
         }
-
     }
 
-
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveData();
+    }
 }
 
 

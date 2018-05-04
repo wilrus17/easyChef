@@ -389,7 +389,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
             Log.i("RecipesInCategory", "Recipes in seleted category: " + list.toString());
         }
-        c.close();
+
         return list;
     }
 
@@ -427,7 +427,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 list.add(recipeId);
             }
         }
-        c.close();
+
         return list;
     }
 
