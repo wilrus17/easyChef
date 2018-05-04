@@ -114,9 +114,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.ratingBar.setRating(rating);
         } else holder.ratingBar.setVisibility(RatingBar.INVISIBLE);
 
-        // get image for recipe cardView
-        // holder.img_recipe_thumbnail.setImageResource(mData.get(position).getThumbnail());
-
 
         // go to clicked recipe
         holder.itemView.setOnClickListener(new View.OnClickListener() {

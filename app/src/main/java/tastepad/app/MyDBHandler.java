@@ -474,6 +474,24 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     }
 
+    public List<String> getCategories(int id) {
+        String GET_CATEGORIES =
+                "SELECT " + CATEGORY_NAME +
+                        " FROM " + TABLE_CATEGORIES +
+                        " INNER JOIN " + TABLE_RECIPE_CATEGORIES +
+                        " ON " + TABLE_RECIPE_CATEGORIES + "." + CATEGORY_ID + "=" + TABLE_CATEGORIES + "." + CATEGORY_ID +
+                        " WHERE " + TABLE_RECIPE_CATEGORIES + "." + RECIPE_ID + "=" + "('" + id + "')";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(GET_CATEGORIES, null);
+        ArrayList<String> list = new ArrayList<String>();
+        // put each row into list
+        while (c.moveToNext()) {
+            String categoryName = c.getString(c.getColumnIndex(CATEGORY_NAME));
+            list.add(categoryName);
+        }
+        return list;
+    }
+
 
 }
 

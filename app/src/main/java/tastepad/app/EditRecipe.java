@@ -2,7 +2,12 @@ package tastepad.app;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,15 +16,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
 
-public class EditRecipe extends AppCompatActivity {
+public class EditRecipe extends AppCompatActivity implements CategoryDialog.OnFragmentInteractionListener {
 
     EditText editIngredient1;
     EditText editQuantity1;
@@ -31,6 +44,17 @@ public class EditRecipe extends AppCompatActivity {
     EditText editTitle;
     MyDBHandler db;
     EditText editInstructions;
+    EditText editServings;
+    TextView tv_categories;
+    RatingBar editRating;
+    ImageView imgv1;
+    File imgpath;
+    String imgs;
+    String s;
+    Bitmap bm = null;
+    int REQUEST_CHECK = 0;
+
+    private ArrayList<Category> checkedCategories;
 
 
     @Override
@@ -53,6 +77,8 @@ public class EditRecipe extends AppCompatActivity {
         String[][] recipeIngredients = (String[][]) extras.getSerializable("Ingredients");
         String recipeInstructions = (String) extras.getString("Instructions");
         String recipeTitle = (String) extras.getString("Title");
+        String recipeServings = (String) extras.getString("Servings");
+        float recipeRating = (float) extras.getFloat("Rating");
         final int recipeId = (Integer) extras.getInt("RecipeId");
 
         // defining recipe title and instruction views
@@ -60,7 +86,11 @@ public class EditRecipe extends AppCompatActivity {
         editInstructions = (EditText) findViewById(R.id.edit_instructions);
 
         // defining each ingredient field and the layout
+
         editTitle = (EditText) findViewById(R.id.edit_title);
+        editServings = (EditText) findViewById(R.id.servings);
+        imgv1 = (ImageView) findViewById(R.id.imageView);
+        editRating = (RatingBar) findViewById(R.id.ratingBar);
         editIngredient1 = (EditText) findViewById(R.id.edit_ingredient);
         editQuantity1 = (EditText) findViewById(R.id.edit_quantity);
         editUnit1 = (Spinner) findViewById(R.id.edit_unit);
@@ -68,14 +98,43 @@ public class EditRecipe extends AppCompatActivity {
         container = (LinearLayout) findViewById(R.id.new_ingredient_layout);
         buttonClear = (Button) findViewById(R.id.clear);
         buttonSave = (Button) findViewById(R.id.save);
+        tv_categories = (TextView) findViewById(R.id.category);
         db = new MyDBHandler(this);
 
 
         // set initial recipe values
         Log.d("recipeInfo: ", recipeTitle);
-
         editTitle.setText(recipeTitle);
         editInstructions.setText(recipeInstructions);
+        editServings.setText(recipeServings);
+        editRating.setRating(db.getRating(recipeId));
+        imgv1.setImageDrawable(Drawable.createFromPath(db.getImagePath(recipeId)));
+
+
+        String formatted = TextUtils.join(" ", db.getCategories(recipeId));
+        Log.i("CATEGORIES", "GOTCATEGORIES: " + formatted);
+        if(!formatted.trim().isEmpty()) {
+            tv_categories.setText(formatted);
+        }
+        Button editimage = (Button) findViewById(R.id.buttonEditImage);
+
+        // add new image
+        editimage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickImage();
+            }
+        });
+
+        // on click category button
+        LinearLayout category = (LinearLayout) findViewById(R.id.categoryLayout);
+        category.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialog();
+            }
+        });
+
 
         ViewGroup group = (ViewGroup) container;
 
@@ -166,7 +225,38 @@ public class EditRecipe extends AppCompatActivity {
                     Recipe recipe = new Recipe();
                     recipe.setRecipename(editTitle.getText().toString());
                     recipe.setInstructions(editInstructions.getText().toString());
+                    recipe.setServings(editServings.getText().toString());
+                    recipe.setImagePath(s);
                     db.createRecipe(recipe);
+
+                    db.createRecipe(recipe);
+                    int recipeId = db.getLastRecipeId();
+
+
+                    db.addRating(db.getLastRecipeId(), editRating.getRating());
+
+                    // save each categories to category table and link table
+                    if (checkedCategories != null) {
+                        for (Category category : checkedCategories) {
+
+                            // if category name exists in table, get ID for that category
+                            // else, create new category get the last added id
+                            int categoryId;
+                            if (db.checkCategoryExist(category.getName()) != -1) {
+                                categoryId = db.checkCategoryExist(category.getName());
+                            } else {
+                                Category c = new Category();
+                                c.setName(category.getName());
+                                db.createCategory(category);
+                                categoryId = db.getLastCategoryId();
+                            }
+
+                            RecipeCategories recipeCategories = new RecipeCategories();
+                            recipeCategories.setCategory_id(categoryId);
+                            recipeCategories.setRecipe_id(recipeId);
+                            db.createRecipesCategories(recipeCategories);
+                        }
+                    }
 
                     // identify each ingredient, quantity, unit
                     ViewGroup viewGroup = (ViewGroup) container;
@@ -178,11 +268,7 @@ public class EditRecipe extends AppCompatActivity {
                         String quantity = ((EditText) group.getChildAt(1)).getText().toString();
                         String ingredientQuantity;
 
-                        // replace null values with -
-                        if (quantity.length() != 0) {
-                            ingredientQuantity = quantity;
-                        } else ingredientQuantity = "-";
-
+                        ingredientQuantity = quantity;
 
                         String ingredientUnit = ((Spinner) group.getChildAt(2)).getSelectedItem().toString();
 
@@ -201,7 +287,7 @@ public class EditRecipe extends AppCompatActivity {
                         }
 
                         // recipe id, ingredient id, quantity, unit to Recipe_Ingredients Link table
-                        int recipeId = db.getLastRecipeId();
+
 
                         Log.d("ids", "value: " + recipeId);
                         Log.d("ids", "value: " + ingredientId);
@@ -248,5 +334,66 @@ public class EditRecipe extends AppCompatActivity {
 
         return 0;
     }
+
+    public void openDialog() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        Bundle args = new Bundle();
+        args.putString("categories", tv_categories.getText().toString());
+        CategoryDialog categoryDialog = new CategoryDialog();
+        categoryDialog.setArguments(args);
+        categoryDialog.show(getSupportFragmentManager(), "category dialog");
+    }
+
+    @Override
+    public void onFragmentSetCategories(final ArrayList<Category> categories) {
+        checkedCategories = categories;
+        List<Category> checked = categories;
+        List<String> categoryList = new ArrayList<String>();
+        for (Category category : checked) {
+            categoryList.add(category.getName());
+        }
+        StringBuilder listString = new StringBuilder();
+
+        for (String s : categoryList)
+            listString.append(s + " ");
+        tv_categories.setText(listString);
+    }
+
+    public void clickImage() {
+        //fire intent
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File fp = getFile();
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(fp));
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        startActivityForResult(intent, REQUEST_CHECK);
+    }
+
+    private File getFile() {
+        File folder = new File("sdcard/attendence");
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+        imgpath = new File(folder, File.separator +
+
+                Calendar.getInstance().getTime() + ".jpg");
+
+
+        return imgpath;
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        try {
+            s = imgpath.toString();
+            Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        imgv1.setImageDrawable(Drawable.createFromPath(s));
+    }
+
 
 }

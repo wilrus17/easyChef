@@ -139,6 +139,8 @@ RecipeActivity extends AppCompatActivity {
                 String[][] recipeIngredients = (String[][]) extras3.getSerializable("Ingredients");
                 String recipeInstructions = (String) extras3.getString("Instructions");
                 String recipeTitle = (String) extras3.getString("Title");
+                String recipeServings = (String) extras3.getString("Servings");
+                float recipeRating = (float) extras3.getFloat("Rating");
                 int recipeId = (Integer) extras3.getInt("RecipeId");
 
                 Intent i = new Intent(this, EditRecipe.class);
@@ -146,6 +148,8 @@ RecipeActivity extends AppCompatActivity {
                 i.putExtra("Ingredients", recipeIngredients);
                 i.putExtra("Instructions", recipeInstructions);
                 i.putExtra("RecipeId", recipeId);
+                i.putExtra("Servings", recipeServings);
+                i.putExtra("Rating", recipeRating);
                 Log.i("ingredientsToEdit", Arrays.deepToString(recipeIngredients));
                 this.startActivity(i);
 
