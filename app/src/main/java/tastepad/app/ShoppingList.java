@@ -103,9 +103,12 @@ public class ShoppingList extends AppCompatActivity {
 
         // from recipe page add all ingredients
         for (String s : listItems) {
-            firstSection.addItem(new ShoppingItem(s));
+            ShoppingItem newItem = new ShoppingItem(s);
+            newItem.setChecked(false);
+            firstSection.addItem(newItem);
             sectionAdapter.notifyDataSetChanged();
         }
+        listItems.clear();
 
         // add item on enter key press
         editTextInsert.setOnKeyListener(new View.OnKeyListener() {
