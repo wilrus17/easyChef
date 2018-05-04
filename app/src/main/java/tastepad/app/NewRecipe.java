@@ -1,11 +1,21 @@
 package tastepad.app;
 
+import android.Manifest;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutCompat;
@@ -23,10 +33,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +63,13 @@ public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFra
     EditText instructions;
     EditText servings;
     TextView tv_categories;
+    ImageView imgv1;
+    File imgpath;
+    String imgs;
+    String s;
+    Bitmap bm =null;
+    int REQUEST_CHECK = 0;
+
     private ArrayList<Category> checkedCategories;
 
     @Override
@@ -63,6 +85,19 @@ public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFra
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
+
+        imgv1 = (ImageView) findViewById(R.id.imageView);
+
+        Button addimage = (Button) findViewById(R.id.buttonAddImage);
+
+        addimage.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickImage();
+            }
+        });
+
+
 
         // recipe details fields
         recipeTitle = (EditText) findViewById(R.id.title_input);
@@ -89,6 +124,7 @@ public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFra
         buttonSave = (Button) findViewById(R.id.save);
         db = new MyDBHandler(this);
 
+
         // clear top ingredient row
         buttonClear.setOnClickListener(new OnClickListener() {
             @Override
@@ -99,6 +135,8 @@ public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFra
 
             }
         });
+
+
 
         // ingredient add, remove row
         buttonAdd.setOnClickListener(new OnClickListener() {
@@ -121,6 +159,17 @@ public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFra
             }
         });
 
+        final RatingBar ratingbar = (RatingBar) findViewById(R.id.ratingBar);
+        ratingbar.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                //Getting the rating
+                Float rating = ratingbar.getRating();
+            }
+        });
+
+
+
         // save recipe to database
         buttonSave.setOnClickListener(new OnClickListener() {
             @Override
@@ -138,11 +187,17 @@ public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFra
                     recipe.setRecipename(recipeTitle.getText().toString());
                     recipe.setInstructions(instructions.getText().toString());
                     recipe.setServings(servings.getText().toString());
+                    recipe.setImagePath(s);
+                    Log.i("recipeName", "createRecipe: " + recipeTitle.getText().toString());
 
                     Log.i("Servings", "createRecipe: " + servings.getText().toString());
 
                     db.createRecipe(recipe);
                     int recipeId = db.getLastRecipeId();
+
+
+                    db.addRating(db.getLastRecipeId(), ratingbar.getRating());
+
 
                     // save each categories to category table and link table
                     if (checkedCategories != null) {
@@ -251,9 +306,50 @@ public class NewRecipe extends AppCompatActivity implements CategoryDialog.OnFra
         for (String s : categoryList)
             listString.append(s + " ");
         tv_categories.setText(listString);
-
-
     }
+
+    public void clickImage() {
+        //fire intent
+        Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File fp = getFile();
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(fp));
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        startActivityForResult(intent, REQUEST_CHECK);
+    }
+
+    private File getFile() {
+        File folder = new File("sdcard/attendence");
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+        imgpath = new File(folder, File.separator +
+
+                Calendar.getInstance().getTime() + ".jpg");
+
+
+        return imgpath;
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        try{
+            s = imgpath.toString();
+            Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+
+        }
+        imgv1.setImageDrawable(Drawable.createFromPath(s));
+    }
+
+
+
 }
+
+
+
+
 
 

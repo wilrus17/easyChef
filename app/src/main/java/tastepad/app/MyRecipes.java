@@ -117,7 +117,13 @@ public class MyRecipes extends AppCompatActivity {
         recyclerViewRecipe.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerViewRecipe.setItemAnimator(new DefaultItemAnimator());
         recyclerViewRecipe.setHasFixedSize(true);
+        recyclerViewRecipe.setHasFixedSize(true);
+        recyclerViewRecipe.setItemViewCacheSize(20);
+        recyclerViewRecipe.setDrawingCacheEnabled(true);
+        recyclerViewRecipe.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         recyclerViewRecipe.setAdapter(recyclerViewAdapter);
+        recyclerViewRecipe.setHasFixedSize(true);
+
 
         getDataFromSQLite();
     }
@@ -275,7 +281,7 @@ public class MyRecipes extends AppCompatActivity {
 
         Log.i("selected@filterCategory", "selected category: " + selectedCategory);
 
-        if (categoryName.equals("All")) {
+        if (categoryName == "All") {
             recyclerViewAdapter.filterList(listRecipe);
             return true;
         }

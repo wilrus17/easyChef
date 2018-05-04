@@ -22,6 +22,10 @@
         <activity android:name=".EditRecipe" />
         <activity android:name=".NewRecipe" />
         <activity android:name=".RecipeActivity" />
+
     </application>
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
 </manifest>

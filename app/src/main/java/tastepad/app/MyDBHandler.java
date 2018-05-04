@@ -5,8 +5,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.Cursor;
 import android.content.Context;
 import android.content.ContentValues;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 
 import java.sql.Array;
 import java.sql.DatabaseMetaData;
@@ -22,7 +25,7 @@ import java.util.stream.Collectors;
 
 public class MyDBHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "RecipesDB.db";
-    private static final int DATABASE_VERISON = 7;
+    private static final int DATABASE_VERISON = 9;
     public int id;
     Context mContext;
     MyDBHandler db;
@@ -34,6 +37,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public static final String RECIPE_INSTRUCTIONS = "instructions";
     public static final String RECIPE_RATING = "rating";
     public static final String RECIPE_SERVINGS = "servings";
+    public static final String RECIPE_IMAGE = "image";
 
 
     // ingredients table & columns
@@ -65,6 +69,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
             RECIPE_INSTRUCTIONS + " TEXT, " +
             RECIPE_RATING + " FLOAT, " +
             RECIPE_SERVINGS + " TEXT, " +
+            RECIPE_IMAGE + " TEXT " +
             ")";
 
     final String CREATE_TABLE_INGREDIENTS = "CREATE TABLE IF NOT EXISTS " +
@@ -154,8 +159,9 @@ public class MyDBHandler extends SQLiteOpenHelper {
         values.put(RECIPE_NAME, recipe.getRecipename());
         values.put(RECIPE_INSTRUCTIONS, recipe.getInstructions());
         values.put(RECIPE_SERVINGS, recipe.getServings());
+        values.put(RECIPE_IMAGE, recipe.getImagePath());
+        Log.i("IMAGEPATH", "dbCreate: " + recipe.getImagePath());
         Log.i("Servings", "dbCreate: " + recipe.getServings());
-
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_RECIPES, null, values);
         db.close();
@@ -196,6 +202,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
             recipe.set_id(fetchedRecipeId);
             recipe.setRecipename(fetchedRecipe);
+
             recipe.setInstructions(fetchedRecipeInstructions);
             recipe.setServings(fetchedRecipeServings);
 
@@ -359,7 +366,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return categories;
     }
 
-    public ArrayList<Integer> getCategoryRecipes(String category){
+    public ArrayList<Integer> getCategoryRecipes(String category) {
 
         String GET_CATEGORY_RECIPES =
                 "SELECT " + RECIPE_ID +
@@ -375,7 +382,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         ArrayList<Integer> list = new ArrayList<>();
 
         int i = 0;
-        while (c.moveToNext()){
+        while (c.moveToNext()) {
             int recipeId = c.getInt(c.getColumnIndex(RECIPE_ID));
             list.add(recipeId);
             i++;
@@ -383,7 +390,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
             Log.i("RecipesInCategory", "Recipes in seleted category: " + list.toString());
         }
         c.close();
-        return  list;
+        return list;
     }
 
 
@@ -395,18 +402,18 @@ public class MyDBHandler extends SQLiteOpenHelper {
         categoryRecipes = getCategoryRecipes(selectedCategory);
 
         Log.i("selected@db", "selected category: " + selectedCategory);
-        String formatted = TextUtils.join("', '", inputList);
+        String formatted = TextUtils.join("%' AND Ingredients.ingredient_name LIKE '%", inputList);
         int listSize = inputList.size();
 
         String GET_FILTERED_RECIPES =
-                "SELECT " + RECIPE_ID +
+                "SELECT DISTINCT " + RECIPE_ID +
                         " FROM " + TABLE_RECIPE_INGREDIENTS +
                         " INNER JOIN " + TABLE_INGREDIENTS +
                         " ON " + TABLE_RECIPE_INGREDIENTS + "." + INGREDIENT_ID + "=" + TABLE_INGREDIENTS + "." + INGREDIENT_ID +
-                        " WHERE " + TABLE_INGREDIENTS + "." + INGREDIENT_NAME + " IN " + "('" + formatted + "')" +
-                        " GROUP BY " + RECIPE_ID +
-                        " HAVING COUNT(DISTINCT " + TABLE_INGREDIENTS + "." + INGREDIENT_NAME + ")" + ">=" + listSize;
+                        " WHERE " + TABLE_INGREDIENTS + "." + INGREDIENT_NAME + " LIKE " + "'%" + formatted + "%'" +
+                        " GROUP BY " + RECIPE_ID;
 
+        Log.i("ingredientCount", "recipes matched list size: " + listSize);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(GET_FILTERED_RECIPES, null);
         int x = c.getCount();
@@ -416,7 +423,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
         while (c.moveToNext()) {
             int recipeId = c.getInt(c.getColumnIndex(RECIPE_ID));
-            if(categoryRecipes.contains(recipeId) || selectedCategory == "All"){
+            if (categoryRecipes.contains(recipeId) || selectedCategory == "All") {
                 list.add(recipeId);
             }
         }
@@ -450,7 +457,28 @@ public class MyDBHandler extends SQLiteOpenHelper {
         Log.i("ratingGet", "gotRating: " + rating);
         return rating;
     }
+
+    public String getImagePath(int id) {
+        String GET_IMAGE =
+                "SELECT " + RECIPE_IMAGE +
+                        " FROM " + TABLE_RECIPES +
+                        " WHERE " + RECIPE_ID + "=" + id;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(GET_IMAGE, null);
+        Log.i("IMAGEPATH1", "GetImage: " + id);
+        Log.i("IMAGEPATH1", "GetImage: " + db.rawQuery(GET_IMAGE, null));
+        c.moveToFirst();
+        String imagePath = c.getString(0);
+        Log.i("IMAGEPATH1", "GotImage: " + imagePath);
+        return imagePath;
+
+    }
+
+
 }
+
+
+
 
 
 

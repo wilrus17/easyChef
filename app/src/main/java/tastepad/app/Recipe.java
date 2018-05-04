@@ -9,6 +9,7 @@ public class Recipe {
     private String instructions;
     private float rating;
     private String servings;
+    private String imagePath;
 
 
     // constructors
@@ -23,44 +24,57 @@ public class Recipe {
         this.instructions = instructions;
     }
 
-    public Recipe(){
-
+    public Recipe() {
     }
 
     // setters
     public void set_id(int _id) {
         this._id = _id;
     }
+
     public void setRecipename(String recipename) {
         this.recipename = recipename;
     }
+
     public void setInstructions(String instructions) {
         this.instructions = instructions;
     }
+
     public void setRating(float rating) {
         this.rating = rating;
     }
+
     public void setServings(String servings) {
         this.servings = servings;
     }
 
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
 
     // getters
     public int get_id() {
         return _id;
     }
+
     public String getRecipename() {
         return recipename;
     }
+
     public String getInstructions() {
         return instructions;
     }
+
     public float getRating() {
         return rating;
     }
+
     public String getServings() {
         return servings;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
 }
 

@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,12 +71,22 @@ RecipeActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.htab_toolbar);
         setSupportActionBar(toolbar);
 
+
+
+
         // some recipe info and the recipe object
         Bundle extras2 = new Bundle();
         extras2 = getIntent().getExtras();
         String title = (String) extras2.getString("Title");
         final float recipeRating = (float) extras2.getFloat("Rating");
         final int recipeId = (Integer) extras2.getInt("RecipeId");
+
+        db = new MyDBHandler(this);
+        db.getReadableDatabase();
+
+        Bitmap bitmap = BitmapFactory.decodeFile(db.getImagePath(recipeId));
+        ImageView img = (ImageView) findViewById(R.id.htab_header);
+        img.setImageBitmap(bitmap);
 
         String recipeObject = extras2.getString("RECIPE OBJECT");
         final Recipe recipe = new Gson().fromJson(recipeObject, Recipe.class);
@@ -85,19 +96,6 @@ RecipeActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(title);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
-        RatingBar ratingbar = (RatingBar) findViewById(R.id.ratingBar);
-        ratingbar.setRating(x);
-
-        // update rating in database
-        ratingbar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                Log.i("rating", "onRatingChanged: " + rating);
-                db.addRating(recipe.get_id(), rating);
-                Log.i("rating", "onRatingChanged: " + recipe.get_id());
-            }
-        });
     }
 
     private void setupTabIcons() {

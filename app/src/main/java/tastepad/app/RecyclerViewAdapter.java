@@ -6,7 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
@@ -28,7 +32,11 @@ import android.widget.Toast;
 import android.support.v7.view.ActionMode.Callback;
 
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.sql.SQLInput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -90,10 +98,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
+        db = new MyDBHandler(mContext);
+        db.getReadableDatabase();
 
-        MyDBHandler db = new MyDBHandler(mContext);
+        if (db.getImagePath(listRecipe.get(position).get_id()) != null) {
+            Bitmap bitmap = decodeFile(db.getImagePath(listRecipe.get(position).get_id()));
+            holder.img_RecipeThumbnail.setImageBitmap(bitmap);
+        }
 
+        Log.i("imagePath", "GOTPATHonBind: " + db.getImagePath(listRecipe.get(position).get_id()));
         holder.textViewRecipeTitle.setText(listRecipe.get(position).getRecipename());
+
         float rating = db.getRating(listRecipe.get(position).get_id());
         if (rating != 0.0f) {
             holder.ratingBar.setRating(rating);
@@ -201,6 +216,36 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         listRecipe = filteredList;
         notifyDataSetChanged();
     }
+
+    private Bitmap decodeFile(String imgPath)
+    {
+        Bitmap b = null;
+        int max_size = 1000;
+        File f = new File(imgPath);
+        try {
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            FileInputStream fis = new FileInputStream(f);
+            BitmapFactory.decodeStream(fis, null, o);
+            fis.close();
+            int scale = 1;
+            if (o.outHeight > max_size || o.outWidth > max_size)
+            {
+                scale = (int) Math.pow(2, (int) Math.ceil(Math.log(max_size / (double) Math.max(o.outHeight, o.outWidth)) / Math.log(0.5)));
+            }
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            fis = new FileInputStream(f);
+            b = BitmapFactory.decodeStream(fis, null, o2);
+            fis.close();
+        }
+        catch (Exception e)
+        {
+        }
+        return b;
+    }
+
+
 
 
 }
