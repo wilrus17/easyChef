@@ -18,38 +18,20 @@
     <bookmark url="file://$PROJECT_DIR$/app/src/main/java/tastepad/app/RecipeActivity.java" line="116" />
     <bookmark url="file://$PROJECT_DIR$/app/src/main/java/tastepad/app/MyDBHandler.java" line="137" />
     <bookmark url="file://$PROJECT_DIR$/app/src/main/java/tastepad/app/RecyclerViewAdapter.java" line="90" />
+    <bookmark url="file://$PROJECT_DIR$/app/src/main/java/tastepad/app/ShoppingList.java" line="160" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e13992ca-feb6-403d-8df3-229316adbad3" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_squareup_picasso_picasso_2_5_2_jar.xml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/photo.png" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-mdpi/photo.png" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xhdpi/photo.png" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable-xxhdpi/photo.png" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.4/fileHashes/fileHashes.bin" afterPath="$PROJECT_DIR$/.gradle/4.4/fileHashes/fileHashes.bin" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.4/fileHashes/fileHashes.lock" afterPath="$PROJECT_DIR$/.gradle/4.4/fileHashes/fileHashes.lock" />
-      <change beforePath="$PROJECT_DIR$/.gradle/4.4/fileHashes/resourceHashesCache.bin" afterPath="$PROJECT_DIR$/.gradle/4.4/fileHashes/resourceHashesCache.bin" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.4/javaCompile/classAnalysis.bin" afterPath="$PROJECT_DIR$/.gradle/4.4/javaCompile/classAnalysis.bin" />
-      <change beforePath="$PROJECT_DIR$/.gradle/4.4/javaCompile/jarAnalysis.bin" afterPath="$PROJECT_DIR$/.gradle/4.4/javaCompile/jarAnalysis.bin" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.4/javaCompile/javaCompile.lock" afterPath="$PROJECT_DIR$/.gradle/4.4/javaCompile/javaCompile.lock" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.4/javaCompile/taskHistory.bin" afterPath="$PROJECT_DIR$/.gradle/4.4/javaCompile/taskHistory.bin" />
-      <change beforePath="$PROJECT_DIR$/.gradle/4.4/javaCompile/taskJars.bin" afterPath="$PROJECT_DIR$/.gradle/4.4/javaCompile/taskJars.bin" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.4/taskHistory/taskHistory.bin" afterPath="$PROJECT_DIR$/.gradle/4.4/taskHistory/taskHistory.bin" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.4/taskHistory/taskHistory.lock" afterPath="$PROJECT_DIR$/.gradle/4.4/taskHistory/taskHistory.lock" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle" afterPath="$PROJECT_DIR$/app/build.gradle" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/tastepad/app/MyDBHandler.java" afterPath="$PROJECT_DIR$/app/src/main/java/tastepad/app/MyDBHandler.java" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/tastepad/app/MyRecipes.java" afterPath="$PROJECT_DIR$/app/src/main/java/tastepad/app/MyRecipes.java" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/tastepad/app/NewRecipe.java" afterPath="$PROJECT_DIR$/app/src/main/java/tastepad/app/NewRecipe.java" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/tastepad/app/Recipe.java" afterPath="$PROJECT_DIR$/app/src/main/java/tastepad/app/Recipe.java" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/tastepad/app/RecipeActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/tastepad/app/RecipeActivity.java" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/tastepad/app/RecyclerViewAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/tastepad/app/RecyclerViewAdapter.java" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_add_recipe.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_add_recipe.xml" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_recipe_screen.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_recipe_screen.xml" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/tastepad/app/ShoppingList.java" afterPath="$PROJECT_DIR$/app/src/main/java/tastepad/app/ShoppingList.java" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -105,19 +87,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AndroidManifest.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="493">
-              <caret line="29" column="0" lean-forward="false" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-          <provider editor-type-id="android-manifest">
-            <state />
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="activity_recipe_screen.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_recipe_screen.xml">
           <provider editor-type-id="android-designer2">
@@ -131,11 +100,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RecyclerViewAdapter.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="RecyclerViewAdapter.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/tastepad/app/RecyclerViewAdapter.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="281">
-              <caret line="104" column="91" lean-forward="true" selection-start-line="104" selection-start-column="91" selection-end-line="104" selection-end-column="91" />
+              <caret line="104" column="91" lean-forward="false" selection-start-line="104" selection-start-column="91" selection-end-line="104" selection-end-column="91" />
               <folding>
                 <element signature="e#1649#1650#0" expanded="true" />
                 <element signature="e#1674#1675#0" expanded="true" />
@@ -152,24 +121,33 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MyFridge.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/tastepad/app/MyFridge.java">
+      <file leaf-file-name="ShoppingList.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/tastepad/app/ShoppingList.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2703">
-              <caret line="196" column="31" lean-forward="false" selection-start-line="196" selection-start-column="31" selection-end-line="196" selection-end-column="31" />
+            <state relative-caret-position="203">
+              <caret line="183" column="0" lean-forward="false" selection-start-line="183" selection-start-column="0" selection-end-line="183" selection-end-column="0" />
+              <folding>
+                <element signature="e#5720#5734#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="HeaderRecyclerViewSection.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/tastepad/app/HeaderRecyclerViewSection.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="901">
+              <caret line="80" column="68" lean-forward="false" selection-start-line="80" selection-start-column="68" selection-end-line="80" selection-end-column="68" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="activity_add_recipe.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_add_recipe.xml">
-          <provider editor-type-id="android-designer2">
-            <state />
-          </provider>
+      <file leaf-file-name="MyFridge.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/tastepad/app/MyFridge.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1156">
-              <caret line="68" column="12" lean-forward="false" selection-start-line="68" selection-start-column="12" selection-end-line="68" selection-end-column="12" />
+            <state relative-caret-position="2703">
+              <caret line="196" column="31" lean-forward="false" selection-start-line="196" selection-start-column="31" selection-end-line="196" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -227,11 +205,12 @@
       <find>bundl</find>
       <find>getitem</find>
       <find>mdb</find>
-      <find>savedata</find>
       <find>shared pr</find>
       <find>Fridge</find>
       <find>Shopping</find>
       <find>rating</find>
+      <find>savedata</find>
+      <find>load</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -2288,7 +2267,6 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/toolbar.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/customtab.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/cardview_item_recipe.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/tastepad/app/ShoppingList.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/tastepad/app/HeaderRecyclerViewSection.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/tastepad/app/ShoppingItem.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
@@ -2303,6 +2281,7 @@
         <option value="$PROJECT_DIR$/app/src/main/java/tastepad/app/MyRecipes.java" />
         <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/java/tastepad/app/RecyclerViewAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/tastepad/app/ShoppingList.java" />
       </list>
     </option>
   </component>
@@ -2782,7 +2761,14 @@
       <option name="project" value="LOCAL" />
       <updated>1525301631007</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="save images smooth recycler">
+      <created>1525419221279</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1525419221280</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TodoView">
@@ -2956,6 +2942,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2997,20 +2984,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="425">
           <caret line="35" column="0" lean-forward="true" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/tastepad/app/HeaderRecyclerViewSection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="80" column="68" lean-forward="false" selection-start-line="80" selection-start-column="68" selection-end-line="80" selection-end-column="68" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/tastepad/app/ShoppingList.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="816">
-          <caret line="151" column="28" lean-forward="true" selection-start-line="151" selection-start-column="28" selection-end-line="151" selection-end-column="28" />
         </state>
       </provider>
     </entry>
@@ -3068,6 +3041,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -3162,6 +3136,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
           <caret line="20" column="46" lean-forward="false" selection-start-line="20" selection-start-column="46" selection-end-line="20" selection-end-column="46" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -3172,6 +3147,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -3192,6 +3168,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-357">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -3261,6 +3238,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="164">
           <caret line="1101" column="0" lean-forward="false" selection-start-line="1101" selection-start-column="0" selection-end-line="1101" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -3350,7 +3328,7 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/tastepad/app/RecyclerViewAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="281">
-          <caret line="104" column="91" lean-forward="true" selection-start-line="104" selection-start-column="91" selection-end-line="104" selection-end-column="91" />
+          <caret line="104" column="91" lean-forward="false" selection-start-line="104" selection-start-column="91" selection-end-line="104" selection-end-column="91" />
           <folding>
             <element signature="e#1649#1650#0" expanded="true" />
             <element signature="e#1674#1675#0" expanded="true" />
@@ -3362,6 +3340,24 @@
             <element signature="e#5758#5759#0" expanded="true" />
             <element signature="e#7092#7093#0" expanded="true" />
             <element signature="e#7132#7133#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/tastepad/app/HeaderRecyclerViewSection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="901">
+          <caret line="80" column="68" lean-forward="false" selection-start-line="80" selection-start-column="68" selection-end-line="80" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/tastepad/app/ShoppingList.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="203">
+          <caret line="183" column="0" lean-forward="false" selection-start-line="183" selection-start-column="0" selection-end-line="183" selection-end-column="0" />
+          <folding>
+            <element signature="e#5720#5734#0" expanded="true" />
           </folding>
         </state>
       </provider>

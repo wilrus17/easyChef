@@ -152,8 +152,13 @@ public class ShoppingList extends AppCompatActivity {
     public void saveData() {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
         Gson gson = new Gson();
-        String json = gson.toJson(firstSection.list);
+        List<ShoppingItem> newList = new ArrayList<ShoppingItem>();
+        newList.addAll(firstSection.list);
+        newList.addAll(secondSection.list);
+
+        String json = gson.toJson(newList);
 
         Log.i("JSON", "saveData: " + json);
         editor.putString("shopping list", json);
@@ -162,26 +167,27 @@ public class ShoppingList extends AppCompatActivity {
     }
 
     // load from shared preferences
-
     public void loadData() {
+        secondSection.list.clear();
+        firstSection.list.clear();
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("shopping list", null);
+        String json2 = sharedPreferences.getString("list2", null);
+        Log.i("JSON", "loadData: " + json);
         Type type = new TypeToken<ArrayList<ShoppingItem>>() {
         }.getType();
         // put data into new list, if item is checked add to list
         ArrayList<ShoppingItem> list = new ArrayList<>();
-        if (list.isEmpty()) {
+        list.addAll((List<ShoppingItem>) gson.fromJson(json, type));
 
-        } else {
-            list.addAll((List<ShoppingItem>) gson.fromJson(json, type));
-            for (ShoppingItem item : list) {
-                if (item.getChecked()) {
-                    firstSection.list.add(item);
-                }
-            }
+        for (ShoppingItem item : list) {
+            if (item.getChecked()) {
+                secondSection.list.add(item);
+            } else firstSection.list.add(item);
         }
     }
+
 
     public void onBackPressed() {
         if (mDrawerlayout.isDrawerOpen(GravityCompat.START)) {
@@ -215,12 +221,10 @@ public class ShoppingList extends AppCompatActivity {
                         mDrawerlayout.closeDrawers();
                         break;
                     case R.id.pantry:
-                        saveData();
                         Intent i = new Intent(ShoppingList.this, MyFridge.class);
                         startActivity(i);
                         break;
                     case R.id.recipes:
-                        saveData();
                         Intent x = new Intent(ShoppingList.this, MyRecipes.class);
                         startActivity(x);
                         break;
@@ -235,7 +239,11 @@ public class ShoppingList extends AppCompatActivity {
         return data;
     }
 
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveData();
+    }
 }
 
 
